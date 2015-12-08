@@ -1,5 +1,5 @@
-#ifndef STT_RES_TEST_UTILS_H_
-#define STT_RES_TEST_UTILS_H_
+#ifndef STT_RES_TEST_UTILS_H
+#define STT_RES_TEST_UTILS_H
 
 #include <string>
 
