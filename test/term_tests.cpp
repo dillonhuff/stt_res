@@ -42,6 +42,25 @@ namespace stt_res {
     test_assertion(fa != b, "diff_ap_neq");
   }
 
+  void diff_lam_neq() {
+    var x("x");
+    var y("y");
+    var f("f");
+    ap fx(&f, &x);
+    lam lfx(&x, &fx);
+    lam ly(&x, &y);
+    test_assertion(lfx != ly, "diff_lam_neq");
+  }
+
+  void same_lam_eq() {
+    var x("x");
+    var f("f");
+    ap fx(&f, &x);
+    lam lfx1(&x, &fx);
+    lam lfx2(&x, &fx);
+    test_assertion(lfx1 == lfx2, "same_lam_eq");
+  }
+
   void all_term_tests() {
     same_var_eq();
     same_var_name_eq();
@@ -49,6 +68,8 @@ namespace stt_res {
     same_var_name_not_neq();
     same_ap_eq();
     diff_ap_neq();
+    diff_lam_neq();
+    same_lam_eq();
   }
   
 }

@@ -2,6 +2,7 @@
 #define STT_RES_AST_H
 
 #include "src/ap.h"
+#include "src/lam.h"
 #include "src/var.h"
 
 #endif
