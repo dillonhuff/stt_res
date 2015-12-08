@@ -9,7 +9,7 @@ using namespace std;
 
 namespace stt_res {
   
-  class ap {
+  class ap : public term {
   protected:
     term* l;
     term* r;
@@ -17,8 +17,17 @@ namespace stt_res {
   public:
   ap(term* lp, term* rp) : l(lp), r(rp) {}
 
-    bool operator==(const ap& other) const {
-      return (*l == *(other.l)) && (*r == *(other.r));
+    virtual bool is_ap() const override {
+      return true;
+    }
+    
+    virtual bool operator==(const term& other) const override {
+      if (other.is_ap()) {
+	auto o = static_cast<const ap&>(other);
+	return (*l == *(o.l)) && (*r == *(o.r));
+      } else {
+	return false;
+      }
     }
 
   };

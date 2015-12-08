@@ -34,12 +34,21 @@ namespace stt_res {
     test_assertion(fa == fa, "same_ap_eq");
   }
 
+  void diff_ap_neq() {
+    var f("f");
+    var a("a");
+    var b("b");
+    ap fa(&f, &a);
+    test_assertion(fa != b, "diff_ap_neq");
+  }
+
   void all_term_tests() {
     same_var_eq();
     same_var_name_eq();
     diff_var_neq();
     same_var_name_not_neq();
     same_ap_eq();
+    diff_ap_neq();
   }
   
 }

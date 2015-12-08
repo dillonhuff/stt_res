@@ -13,7 +13,11 @@ namespace stt_res {
   class term {
   public:
 
-    virtual bool isVar() const {
+    virtual bool is_var() const {
+      return false;
+    }
+
+    virtual bool is_ap() const {
       return false;
     }
 

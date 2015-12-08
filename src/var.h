@@ -14,12 +14,12 @@ namespace stt_res {
   public:
   var(string n) : name(n) {}
 
-    virtual bool isVar() const override {
+    virtual bool is_var() const override {
       return true;
     }
 
     virtual bool operator==(const term& other) const override {
-      if (other.isVar()) {
+      if (other.is_var()) {
 	const var& o = static_cast<const var&>(other);
 	return name == o.name;
       } else {
