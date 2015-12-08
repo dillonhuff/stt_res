@@ -5,13 +5,30 @@
 
 using namespace std;
 
-class var {
- public:
-  var(string n) {}
+namespace stt_res {
+  
+  class var : public term {
+  protected:
+    string name;
+    
+  public:
+  var(string n) : name(n) {}
 
-  bool operator==(const var& other) const {
-    return false;
-  }
-};
+    virtual bool isVar() const override {
+      return true;
+    }
+
+    virtual bool operator==(const term& other) const override {
+      if (other.isVar()) {
+	const var& o = static_cast<const var&>(other);
+	return name == o.name;
+      } else {
+	return false;
+      }
+    }
+
+  };
+
+}
 
 #endif
