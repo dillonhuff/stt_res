@@ -14,7 +14,7 @@ using namespace std;
 
 namespace stt_res {
 
-  typedef pair<const var*, const term*> tp;
+  typedef pair<const term*, const term*> tp;
   typedef vector<tp> sub;
   typedef int res_code;
 
@@ -25,6 +25,8 @@ namespace stt_res {
     bool system_is_solved(stt_res::sub& x);
     void delete_identical_pairs(stt_res::sub& x);
     bool pair_is_solved(const term* l, const term* r);
+    void reduce_pair_args(stt_res::sub& s);
+    stt_res::sub reduce_args(const term* l, const term* r);
     
   public:
 
@@ -34,7 +36,9 @@ namespace stt_res {
 
     const term* sub(const var* target, const term* replacement, const term* t);
 
-    res_code unify(stt_res::sub& x);
+    res_code unify(stt_res::sub& s);
+
+    const term* apply_sub(stt_res::sub& s, const term* t);
 
   };
 

@@ -75,6 +75,31 @@ namespace stt_res {
     test_assertion(res == UNIFY_SUCCEEDED && s.size() == 0, "unify_var");
   }
 
+  void already_unified() {
+    context c;
+    auto x = c.mk_var("x");
+    auto y = c.mk_var("y");
+    sub s{tp(x, y)};
+    c.unify(s);
+    auto sx = c.apply_sub(s, x);
+    auto sy = c.apply_sub(s, y);
+    test_assertion(*sx == *sy, "already_unified");
+  }
+
+  void unify_ap() {
+    context c;
+    auto x = c.mk_var("x");
+    auto y = c.mk_var("y");
+    auto f = c.mk_var("f");
+    auto fx = c.mk_ap(f, x);
+    auto fy = c.mk_ap(f, y);
+    sub s{tp(fx, fy)};
+    c.unify(s);
+    auto sfx = c.apply_sub(s, fx);
+    auto sfy = c.apply_sub(s, fy);
+    test_assertion(*sfx == *sfy, "unify_ap");
+  }
+
   void all_context_tests() {
     make_var();
     dont_sub_var();
@@ -83,6 +108,8 @@ namespace stt_res {
     dont_sub_lam();
     sub_lam();
     unify_var();
+    already_unified();
+    unify_ap();
   }
 
 }

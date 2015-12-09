@@ -56,12 +56,59 @@ namespace stt_res {
     s.erase(remove_if(s.begin(), s.end(), [](tp p) {return *(p.first) == *(p.second);}), s.end());
   }
 
+  stt_res::sub context::reduce_args(const term* l, const term* r) {
+    stt_res::sub s;
+    // auto ls = split_leading_lambdas(l);
+    // auto rs = split_leading_lambdas(r);
+    // if (elements_equal(ls.first, rs.first)) {
+    //   auto la = split_args(l.second);
+    //   auto ra = split_args(r.second);
+    //   if (*(la.first) == *(ra.first)) {
+    // 	auto largs = la.second;
+    // 	auto rargs = ra.second;
+    // 	assert(largs.size() == rargs.size());
+    // 	for (int i = 0; i < largs.size(); i++) {
+    // 	  auto la = append_lambdas(ls.first, largs[i]);
+    // 	  auto ra = append_lambdas(ls.first, rargs[i]);
+    // 	  s.push_back(tp(largs[i], rargs[i]));
+    // 	}
+    //   }
+    // }
+    return s;
+  }
+
+  void context::reduce_pair_args(stt_res::sub& s) {
+    for (auto p : s) {
+      auto subpairs = reduce_args(p.first, p.second);
+      if (subpairs.size() > 0) {
+	s.insert(s.end(), subpairs.begin(), subpairs.end());
+      }
+    }
+  }
+
   res_code context::unify(stt_res::sub& s) {
     while (true) {
       if (system_is_solved(s)) {
 	return UNIFY_SUCCEEDED;
       }
+      auto v = s;
       delete_identical_pairs(s);
+      reduce_pair_args(s);
+      if (v == s) {
+	return UNIFY_FAILED;
+      }
     }
+  }
+
+  const term* context::apply_sub(stt_res::sub& s, const term* t) {
+    auto t_loc = &t;
+    for (auto p : s) {
+      assert(p.first->is_var());
+      auto v = static_cast<const var*>(p.first);
+      auto e = p.second;
+      auto new_t = sub(v, e, *t_loc);
+      t_loc = &new_t;
+    }
+    return *t_loc;
   }
 }
