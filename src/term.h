@@ -33,6 +33,7 @@ namespace stt_res {
     }
 
   };
+
 }
 
 #endif

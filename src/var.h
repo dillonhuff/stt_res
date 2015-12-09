@@ -1,6 +1,7 @@
 #ifndef STT_RES_VAR_H
 #define STT_RES_VAR_H
 
+#include <iostream>
 #include <string>
 
 #include "src/term.h"
@@ -27,6 +28,11 @@ namespace stt_res {
       } else {
 	return false;
       }
+    }
+
+    friend ostream& operator<<(ostream& stream, const var& v) {
+      stream << v.name;
+      return stream;
     }
 
   };
