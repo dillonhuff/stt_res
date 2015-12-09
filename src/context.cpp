@@ -35,4 +35,33 @@ namespace stt_res {
     }
     assert(false);
   }
+
+  bool context::pair_is_solved(const term* l, const term* r) {
+    if (l->is_var()) {
+      auto fvs = free_vars(r);
+      auto vr = static_cast<const var*>(l);
+      auto val = *vr;
+      return !(count_if(fvs.begin(), fvs.end(), [val](const var* v){return val == *v;}));
+    }
+    return false;
+  }
+
+  bool context::system_is_solved(stt_res::sub& s) {
+    auto num_solved_pairs = count_if(s.begin(), s.end(), [this](tp p) {return pair_is_solved(p.first, p.second);});
+    auto num_pairs = s.size();
+    return num_solved_pairs == num_pairs;
+  }
+
+  void context::delete_identical_pairs(stt_res::sub& s) {
+    s.erase(remove_if(s.begin(), s.end(), [](tp p) {return *(p.first) == *(p.second);}), s.end());
+  }
+
+  res_code context::unify(stt_res::sub& s) {
+    while (true) {
+      if (system_is_solved(s)) {
+	return UNIFY_SUCCEEDED;
+      }
+      delete_identical_pairs(s);
+    }
+  }
 }

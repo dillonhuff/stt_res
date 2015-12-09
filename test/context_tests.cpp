@@ -67,6 +67,14 @@ namespace stt_res {
     test_assertion(*r == *correct, "sub_lam");
   }
 
+  void unify_var() {
+    context c;
+    auto x = c.mk_var("x");
+    sub s{tp(x, x)};
+    auto res = c.unify(s);
+    test_assertion(res == UNIFY_SUCCEEDED && s.size() == 0, "unify_var");
+  }
+
   void all_context_tests() {
     make_var();
     dont_sub_var();
@@ -74,6 +82,7 @@ namespace stt_res {
     sub_ap();
     dont_sub_lam();
     sub_lam();
+    unify_var();
   }
 
 }
