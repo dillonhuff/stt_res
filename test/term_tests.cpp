@@ -1,5 +1,4 @@
 #include "src/ast.h"
-#include "src/pretty_print.h"
 #include "test/term_tests.h"
 #include "test/test_utils.h"
 
@@ -73,9 +72,7 @@ namespace stt_res {
     lam lfxy(&f2, &fxy);
     lam lxlfxy(&x2, &lfxy);
     auto fvs = free_vars(&lxlfxy);
-    cout << xy << endl;
-    cout << fxy << endl;
-    cout << lxlfxy << endl;
+    test_assertion(fvs.size() == 1 && *(fvs[0]) == y, "lam_free_vars");
   }
 
   void all_term_tests() {
