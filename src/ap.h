@@ -11,11 +11,12 @@ namespace stt_res {
   
   class ap : public term {
   protected:
-    term* l;
-    term* r;
     
   public:
-  ap(term* lp, term* rp) : l(lp), r(rp) {}
+    const term* l;
+    const term* r;
+    
+  ap(const term* lp, const term* rp) : l(lp), r(rp) {}
 
     virtual bool is_ap() const override {
       return true;

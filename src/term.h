@@ -3,8 +3,7 @@
 
 #include <cassert>
 #include <string>
-
-#include "src/term.h"
+#include <vector>
 
 using namespace std;
 
@@ -34,7 +33,6 @@ namespace stt_res {
     }
 
   };
-
 }
 
 #endif

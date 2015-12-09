@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "src/term.h"
+
 using namespace std;
 
 namespace stt_res {

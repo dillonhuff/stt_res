@@ -2,6 +2,7 @@
 #define STT_RES_LAM_H
 
 #include <string>
+#include <vector>
 
 #include "src/term.h"
 #include "src/var.h"
@@ -10,13 +11,12 @@ using namespace std;
 
 namespace stt_res {
   
-  class lam : public term {
-  protected:
-    var* v;
-    term* e;
-    
+  class lam : public term {    
   public:
-  lam(var* vp, term* ep) : v(vp), e(ep) {}
+    const var* v;
+    const term* e;
+
+  lam(const var* vp, const term* ep) : v(vp), e(ep) {}
 
     virtual bool is_lam() const override {
       return true;
