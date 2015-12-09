@@ -1,6 +1,7 @@
 #ifndef STT_RES_AP_H
 #define STT_RES_AP_H
 
+#include <iostream>
 #include <string>
 
 #include "src/term.h"
@@ -29,6 +30,14 @@ namespace stt_res {
       } else {
 	return false;
       }
+    }
+
+    virtual void print(ostream& stream) const override {
+      stream << "(";
+      l->print(stream);
+      stream << " ";
+      r->print(stream);
+      stream << ")";
     }
 
   };

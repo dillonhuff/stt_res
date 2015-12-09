@@ -11,10 +11,9 @@ using namespace std;
 namespace stt_res {
   
   class var : public term {
-  protected:
+  public:
     string name;
     
-  public:
   var(string n) : name(n) {}
 
     virtual bool is_var() const override {
@@ -30,9 +29,8 @@ namespace stt_res {
       }
     }
 
-    friend ostream& operator<<(ostream& stream, const var& v) {
-      stream << v.name;
-      return stream;
+    virtual void print(ostream& stream) const override {
+      stream << name;
     }
 
   };

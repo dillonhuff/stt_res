@@ -11,5 +11,7 @@ namespace stt_res {
   
   vector<const var*> free_vars(const term* t);
 
+  ostream& operator<<(ostream& stream, const term& other);
+
 }
 #endif

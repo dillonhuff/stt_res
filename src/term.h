@@ -32,6 +32,10 @@ namespace stt_res {
       return !(*this == other);
     }
 
+    virtual void print(ostream& other) const {
+      assert(false);
+    }
+
   };
 
 }

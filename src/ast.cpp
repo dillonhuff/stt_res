@@ -29,4 +29,9 @@ namespace stt_res {
     assert(false);
   }
 
+  ostream& operator<<(ostream& stream, const term& other) {
+    other.print(stream);
+    return stream;
+  }
+
 }

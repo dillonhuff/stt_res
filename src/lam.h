@@ -31,6 +31,14 @@ namespace stt_res {
       }
     }
 
+    virtual void print(ostream& stream) const override {
+      stream << "(\\";
+      v->print(stream);
+      stream << ". ";
+      e->print(stream);
+      stream << ")";
+    }
+
   };
 
 }
