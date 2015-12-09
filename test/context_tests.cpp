@@ -2,7 +2,6 @@
 
 #include "src/ast.h"
 #include "src/context.h"
-#include "src/pretty_print.h"
 #include "test/context_tests.h"
 #include "test/test_utils.h"
 
@@ -44,7 +43,6 @@ namespace stt_res {
     auto fx = c.mk_ap(f, x1);
     auto r = c.sub(x2, y, fx);
     auto correct = c.mk_ap(f, y);
-    cout << *correct << endl;
     test_assertion(*r == *correct, "sub_ap");
   }
 
@@ -66,8 +64,6 @@ namespace stt_res {
     auto l = c.mk_lam(x, y1);
     auto r = c.sub(y2, z, l);
     auto correct = c.mk_lam(x, z);
-    std::cout << *x << std::endl;
-    std::cout << *correct << std::endl;
     test_assertion(*r == *correct, "sub_lam");
   }
 
