@@ -14,7 +14,7 @@ namespace stt_res {
   class term {
   public:
 
-    type* t;
+    const type* t;
 
     virtual bool is_lam() const {
       return false;

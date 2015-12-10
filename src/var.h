@@ -14,7 +14,7 @@ namespace stt_res {
   public:
     string name;
     
-    var(string n, type* tp) {
+    var(string n, const type* tp) {
       name = n;
       t = tp;
     }

@@ -62,28 +62,32 @@ namespace stt_res {
     test_assertion(lfx != ly, "diff_lam_neq");
   }
 
-  // void same_lam_eq() {
-  //   var x("x");
-  //   var f("f");
-  //   ap fx(&f, &x);
-  //   lam lfx1(&x, &fx);
-  //   lam lfx2(&x, &fx);
-  //   test_assertion(lfx1 == lfx2, "same_lam_eq");
-  // }
+  void same_lam_eq() {
+    tvar k("k");
+    tfunc ft(&k, &k);
+    var x("x", &k);
+    var f("f", &ft);
+    ap fx(&f, &x);
+    lam lfx1(&x, &fx);
+    lam lfx2(&x, &fx);
+    test_assertion(lfx1 == lfx2, "same_lam_eq");
+  }
 
-  // void lam_free_vars() {
-  //   var x1("x");
-  //   var x2("x");
-  //   var y("y");
-  //   var f1("f");
-  //   var f2("f");
-  //   ap xy(&x1, &y);
-  //   ap fxy(&f1, &xy);
-  //   lam lfxy(&f2, &fxy);
-  //   lam lxlfxy(&x2, &lfxy);
-  //   auto fvs = free_vars(&lxlfxy);
-  //   test_assertion(fvs.size() == 1 && *(fvs[0]) == y, "lam_free_vars");
-  // }
+  void lam_free_vars() {
+    tvar k("k");
+    tfunc ft(&k, &k);
+    var x1("x", &k);
+    var x2("x", &k);
+    var y("y", &k);
+    var f1("f", &ft);
+    var f2("f", &ft);
+    ap xy(&x1, &y);
+    ap fxy(&f1, &xy);
+    lam lfxy(&f2, &fxy);
+    lam lxlfxy(&x2, &lfxy);
+    auto fvs = free_vars(&lxlfxy);
+    test_assertion(fvs.size() == 1 && *(fvs[0]) == y, "lam_free_vars");
+  }
 
   void all_term_tests() {
     same_var_eq();
@@ -93,8 +97,8 @@ namespace stt_res {
     same_ap_eq();
     diff_ap_neq();
     diff_lam_neq();
-    // same_lam_eq();
-    // lam_free_vars();
+    same_lam_eq();
+    lam_free_vars();
   }
   
 }

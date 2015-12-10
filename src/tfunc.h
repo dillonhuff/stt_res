@@ -12,7 +12,7 @@ class tfunc : public type {
 
  tfunc(const type* in , const type* out) : in(in), out(out) {}
   
-  virtual bool is_var() const override {
+  virtual bool is_func() const override {
     return true;
   }
 };
