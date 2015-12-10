@@ -144,6 +144,9 @@ namespace stt_res {
     auto lgx = c.mk_lam(y, gx);
     sub s{tp(f, lgx), tp(fa, gx)};
     c.unify(s);
+    for (auto p : s) {
+      cout << *(p.first) << " / " << *(p.second) << endl;
+    }    
     auto sfa = c.apply_sub(s, fa);
     auto sgx = c.apply_sub(s, gx);
     test_assertion(*sfa == *sgx, "unify_2");

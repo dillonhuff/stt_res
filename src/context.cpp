@@ -87,30 +87,24 @@ namespace stt_res {
   }
 
   pair<const var*, tp> context::find_solvable_pair(stt_res::sub& s) {
-    cout << "-- start find_solvable_pair" << endl;
     tp to_solve;
     const var* val = nullptr;
     for (auto p : s) {
       auto matched = match_lambdas(p.first, p.second);
-      auto ls = split_leading_lambdas(p.first);
-      auto rs = split_leading_lambdas(p.second);
-      //      if (vars_equal(ls.first, rs.first)) {
-      auto la = split_args(ls.second);
+      auto lam_vars = matched.first;
+      auto ft = matched.second.first;
+      auto la = split_args(ft);
       if (la.first->is_var()) {
 	auto potential = static_cast<const var*>(la.first);
 	if (!free_in(potential, p.second)) {
-	  if (la.second.size() == ls.first.size()) {
+	  if (la.second.size() == lam_vars.size()) {
 	    auto all_vars = true;
-	    for (int i = 0; i < la.second.size(); i++) {
+	    for (int i = 0; i < lam_vars.size(); i++) {
 	      auto e = la.second[i];
-	      auto v = ls.first[i];
-	      cout << "var compare" << endl;
+	      auto v = lam_vars[i];
 	      if (*e != *v) {
-		cout << "e = " << *e << endl;
-		cout << "v = " << *v << endl;
 		all_vars = false;
 	      }
-	      cout << "done var compare" << endl;
 	    }
 	    if (all_vars) {
 	      to_solve = p;
@@ -120,9 +114,7 @@ namespace stt_res {
 	  }
 	}
       }
-      //      }
     }
-    cout << "-- end find_solvable_pair" << endl;
     return pair<const var*, tp>(val, to_solve);
   }
 
@@ -130,23 +122,21 @@ namespace stt_res {
     auto r = find_solvable_pair(s);
     auto val = r.first;
     auto to_solve = r.second;
-
-    cout << "about to check null" << endl;
     
     if (val == nullptr) {
-      cout << "Is null" << endl;
       return;
     }
-
-    cout << "done checking null" << endl;
     
     s.erase(remove_if(s.begin(), s.end(), [to_solve](tp r) { return *(r.first) == *(to_solve.first) && *(r.second) == *(to_solve.second); }), s.end());
-    // TODO: Add substitution [val / to_solve.second] to complete the solve operation
-    for (auto p : s) {
-      
+    auto new_pair = tp(val, to_solve.second);
+    stt_res::sub new_s{new_pair};
+    for (int i = 0; i < s.size(); i++) {
+      auto p = s[i];
+      auto l = p.first;
+      auto r = p.second;
+      s[i] = tp(apply_sub(new_s, l), apply_sub(new_s, r));
     }
-    s.push_back(tp(val, to_solve.second));
-    cout << "-- done solve_vars" << endl;
+    s.push_back(new_pair);
   }
 
   res_code context::unify(stt_res::sub& s) {

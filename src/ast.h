@@ -22,5 +22,7 @@ namespace stt_res {
   bool vars_equal(vector<const var*> l, vector<const var*> r);
 
   bool free_in(const var* v, const term* t);
+
+  pair<vector<const var*>, pair<const term*, const term*>> match_lambdas(const term* l, const term* r);
 }
 #endif

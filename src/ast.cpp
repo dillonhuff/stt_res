@@ -79,4 +79,22 @@ namespace stt_res {
     return true;
   }
 
+  pair<vector<const var*>, pair<const term*, const term*>> match_lambdas(const term* l, const term* r) {
+    const term* const* l_loc = &l;
+    const term* const* r_loc = &r;
+    vector<const var*> vs;
+    while ((*l_loc)->is_lam() && (*r_loc)->is_lam()) {
+      auto l_m = static_cast<const lam*>(*l_loc);
+      auto r_m = static_cast<const lam*>(*r_loc);
+      if (*(l_m->v) == *(r_m->v)) {
+	vs.push_back(l_m->v);
+      } else {
+	break;
+      }
+      l_loc = &(l_m->e);
+      r_loc = &(r_m->e);
+    }
+    return pair<vector<const var*>, pair<const term*, const term*>>(vs, pair<const term*, const term*>(*l_loc, *r_loc));
+  }
+
 }
