@@ -86,25 +86,67 @@ namespace stt_res {
     }
   }
 
-  // TODO: Fix this horrible use of iterators. Really should be
-  // filtering and then applying solver
-  void context::solve_vars(stt_res::sub& s) {
+  pair<const var*, tp> context::find_solvable_pair(stt_res::sub& s) {
+    cout << "-- start find_solvable_pair" << endl;
+    tp to_solve;
+    const var* val = nullptr;
     for (auto p : s) {
       auto ls = split_leading_lambdas(p.first);
       auto rs = split_leading_lambdas(p.second);
       if (vars_equal(ls.first, rs.first)) {
 	auto la = split_args(ls.second);
 	if (la.first->is_var()) {
-	  auto val = static_cast<const var*>(la.first);
-	  if (!free_in(val, p.second)) {
-	    s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); }), s.end());
-	    for (auto p2 : s) {
+	  auto potential = static_cast<const var*>(la.first);
+	  if (!free_in(potential, p.second)) {
+	    // if (la.second.size() == ls.first.size()) {
+	    //   val = potential;
+	    //   to_solve = p;
+	    // }
+	    if (la.second.size() == ls.first.size()) {
+	      auto all_vars = true;
+	      for (int i = 0; i < la.second.size(); i++) {
+	    	auto e = la.second[i];
+	    	auto v = ls.first[i];
+	    	cout << "var compare" << endl;
+	    	if (*e != *v) {
+	    	  all_vars = false;
+	    	}
+	    	cout << "done var compare" << endl;
+	      }
+	      if (all_vars) {
+	    	to_solve = p;
+		val = potential;
+	    	break;
+	      }
 	    }
-	    s.push_back(tp(val, p.second));
 	  }
 	}
       }
     }
+    cout << "-- end find_solvable_pair" << endl;
+    return pair<const var*, tp>(val, to_solve);
+  }
+
+  void context::solve_vars(stt_res::sub& s) {
+    auto r = find_solvable_pair(s);
+    auto val = r.first;
+    auto to_solve = r.second;
+
+    cout << "about to check null" << endl;
+    
+    if (val == nullptr) {
+      return;
+    }
+
+    cout << "done checking null" << endl;
+    
+    s.erase(remove_if(s.begin(), s.end(), [to_solve](tp r) { return *(r.first) == *(to_solve.first) && *(r.second) == *(to_solve.second); }), s.end());
+    // TODO: Add substitution [val / to_solve.second] to complete the solve operation
+    for (auto p : s) {
+      
+    }
+    s.push_back(tp(val, to_solve.second));
+    cout << "-- done solve_vars" << endl;
   }
 
   res_code context::unify(stt_res::sub& s) {

@@ -35,7 +35,6 @@ namespace stt_res {
     return count_if(fvs.begin(), fvs.end(), var_eq) > 0;
   }
 
-
   pair<vector<const var*>, const term*> split_leading_lambdas(const term* t) {
     const term* const* t_loc = &t;
     vector<const var*> vs;
