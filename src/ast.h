@@ -13,8 +13,6 @@ namespace stt_res {
   
   vector<const var*> free_vars(const term* t);
 
-  ostream& operator<<(ostream& stream, const term& other);
-
   pair<vector<const var*>, const term*> split_leading_lambdas(const term* t);
 
   pair<const term*, vector<const term*>> split_args(const term* t);

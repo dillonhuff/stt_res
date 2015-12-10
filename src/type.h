@@ -1,6 +1,8 @@
 #ifndef STT_RES_TYPE_H
 #define STT_RES_TYPE_H
 
+using namespace std;
+
 namespace stt_res {
   
   class type {
@@ -24,6 +26,8 @@ namespace stt_res {
     virtual int arity() const { assert(false); }
   
   };
+
+  ostream& operator<<(ostream& stream, const type& other);
  
 }
 

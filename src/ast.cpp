@@ -29,10 +29,6 @@ namespace stt_res {
     assert(false);
   }
 
-  ostream& operator<<(ostream& stream, const term& other) {
-    other.print(stream);
-    return stream;
-  }
 
   pair<vector<const var*>, const term*> split_leading_lambdas(const term* t) {
     const term* const* t_loc = &t;

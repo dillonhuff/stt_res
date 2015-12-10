@@ -91,8 +91,12 @@ namespace stt_res {
     auto y = c.mk_var("y", k);
     auto f1 = c.mk_var("f", ft);
     auto f2 = c.mk_var("f", ft);
+    cout << "-- before xy" << endl;
     auto xy = c.mk_ap(x1, y);
+    cout << "-- before fxy" << endl;
+    cout << *f1 << endl;
     auto fxy = c.mk_ap(f1, xy);
+    cout << "-- before lfxy" << endl;
     auto lfxy = c.mk_lam(f2, fxy);
     auto lxlfxy = c.mk_lam(x2, lfxy);
     auto fvs = free_vars(lxlfxy);

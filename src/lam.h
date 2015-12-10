@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "src/term.h"
+#include "src/tfunc.h"
 #include "src/var.h"
 
 using namespace std;
@@ -16,7 +17,12 @@ namespace stt_res {
     const var* v;
     const term* e;
 
-  lam(const var* vp, const term* ep) : v(vp), e(ep) {}
+    lam(const var* vp, const term* ep) {
+      v = vp;
+      e = ep;
+      // TODO REPLACE THIS IN context.mk_lam
+      t = new tfunc(v->t, e->t);
+    }
 
     virtual bool is_lam() const override {
       return true;

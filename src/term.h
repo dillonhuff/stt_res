@@ -2,6 +2,7 @@
 #define STT_RES_TERM_H
 
 #include <cassert>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -15,8 +16,6 @@ namespace stt_res {
   public:
 
     const type* t;
-
-    ~term() {}
 
     virtual bool is_lam() const {
       return false;
@@ -44,6 +43,7 @@ namespace stt_res {
 
   };
 
+  ostream& operator<<(ostream& stream, const term& other);
 }
 
 #endif
