@@ -87,6 +87,28 @@ namespace stt_res {
     }
   }
 
+  // TODO: Fix this horrible use of iterators. Really should be
+  // filtering and then applying solver
+  void context::solve_vars(stt_res::sub& s) {
+    for (auto p : s) {
+      auto ls = split_leading_lambdas(p.first);
+      auto rs = split_leading_lambdas(p.second);
+      if (vars_equal(ls.first, rs.first)) {
+	auto la = split_args(ls.second);
+	if (la.first->is_var()) {
+	  auto val = static_cast<const var*>(la.first);
+	  auto fvs = free_vars(p.second);
+	  if (count_if(fvs.begin(), fvs.end(), [val](const var* v) {return *v == *val;}) == 0) {
+	    s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); }), s.end());
+	    for (auto p2 : s) {
+	    }
+	    s.push_back(tp(val, p.second));
+	  }
+	}
+      }
+    }
+  }
+
   res_code context::unify(stt_res::sub& s) {
     while (true) {
       if (system_is_solved(s)) {
@@ -95,6 +117,7 @@ namespace stt_res {
       auto v = s;
       delete_identical_pairs(s);
       reduce_pair_args(s);
+      solve_vars(s);
       if (v == s) {
 	return UNIFY_FAILED;
       }

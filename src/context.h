@@ -28,7 +28,7 @@ namespace stt_res {
     void reduce_pair_args(stt_res::sub& s);
     stt_res::sub reduce_args(const term* l, const term* r);
     const term* append_lambdas(vector<const var*> vars, const term* t);
-
+    void solve_vars(stt_res::sub& s);
     
   public:
 

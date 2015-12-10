@@ -100,6 +100,25 @@ namespace stt_res {
     test_assertion(*sfx == *sfy, "unify_ap");
   }
 
+  void unify_func_var() {
+    context c;
+    auto x = c.mk_var("x");
+    auto y = c.mk_var("y");
+    auto f = c.mk_var("f");
+    auto g = c.mk_var("g");
+    auto lf = c.mk_lam(x, c.mk_lam(y, c.mk_ap(c.mk_ap(f, x), y)));
+    auto lg = c.mk_lam(x, c.mk_lam(y, c.mk_ap(c.mk_ap(g, x), y)));
+    cout << "-- " << *lf << endl;
+    cout << "-- " << *lg << endl;
+    sub s{tp(lf, lg)};
+    c.unify(s);
+    auto slf = c.apply_sub(s, lf);
+    auto slg = c.apply_sub(s, lg);
+    cout << "-- " << *slf << endl;
+    cout << "-- " << *slg << endl;
+    test_assertion(*slf == *slg, "unify_func_var");
+  }
+
   void all_context_tests() {
     make_var();
     dont_sub_var();
@@ -110,6 +129,7 @@ namespace stt_res {
     unify_var();
     already_unified();
     unify_ap();
+    unify_func_var();
   }
 
 }
