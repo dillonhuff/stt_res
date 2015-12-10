@@ -38,10 +38,8 @@ namespace stt_res {
 
   bool context::pair_is_solved(const term* l, const term* r) {
     if (l->is_var()) {
-      auto fvs = free_vars(r);
       auto vr = static_cast<const var*>(l);
-      auto val = *vr;
-      return !(count_if(fvs.begin(), fvs.end(), [val](const var* v){return val == *v;}));
+      return !free_in(vr, r);
     }
     return false;
   }
@@ -83,6 +81,7 @@ namespace stt_res {
       if (subpairs.size() > 0) {
 	s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); }), s.end());
 	s.insert(s.end(), subpairs.begin(), subpairs.end());
+	break;
       }
     }
   }
@@ -97,8 +96,7 @@ namespace stt_res {
 	auto la = split_args(ls.second);
 	if (la.first->is_var()) {
 	  auto val = static_cast<const var*>(la.first);
-	  auto fvs = free_vars(p.second);
-	  if (count_if(fvs.begin(), fvs.end(), [val](const var* v) {return *v == *val;}) == 0) {
+	  if (!free_in(val, p.second)) {
 	    s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); }), s.end());
 	    for (auto p2 : s) {
 	    }

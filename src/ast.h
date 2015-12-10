@@ -21,5 +21,6 @@ namespace stt_res {
 
   bool vars_equal(vector<const var*> l, vector<const var*> r);
 
+  bool free_in(const var* v, const term* t);
 }
 #endif

@@ -29,6 +29,12 @@ namespace stt_res {
     assert(false);
   }
 
+  bool free_in(const var* v, const term* t) {
+    auto fvs = free_vars(t);
+    auto var_eq = [v](const var* other) { return *other == *v; };
+    return count_if(fvs.begin(), fvs.end(), var_eq) > 0;
+  }
+
 
   pair<vector<const var*>, const term*> split_leading_lambdas(const term* t) {
     const term* const* t_loc = &t;
