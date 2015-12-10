@@ -130,6 +130,25 @@ namespace stt_res {
     test_assertion(*slf == *slg, "unify_func_var");
   }
 
+  void unify_2() {
+    context c;
+    auto t = c.mk_tvar("t");
+    auto ft = c.mk_tfunc(t, t);
+    auto x = c.mk_var("x", t);
+    auto y = c.mk_var("y", t);
+    auto a = c.mk_var("a", t);
+    auto f = c.mk_var("f", ft);
+    auto g = c.mk_var("g", ft);
+    auto gx = c.mk_ap(g, x);
+    auto fa = c.mk_ap(f, a);
+    auto lgx = c.mk_lam(y, gx);
+    sub s{tp(f, lgx), tp(fa, gx)};
+    c.unify(s);
+    auto sfa = c.apply_sub(s, fa);
+    auto sgx = c.apply_sub(s, gx);
+    test_assertion(*sfa == *sgx, "unify_2");
+  }
+
   void unify_funcs() {
     context c;
     auto t = c.mk_tvar("t");
@@ -162,6 +181,7 @@ namespace stt_res {
     already_unified();
     unify_ap();
     unify_func_var();
+    unify_2();
     unify_funcs();
   }
 

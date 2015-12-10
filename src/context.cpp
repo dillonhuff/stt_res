@@ -91,35 +91,36 @@ namespace stt_res {
     tp to_solve;
     const var* val = nullptr;
     for (auto p : s) {
+      auto matched = match_lambdas(p.first, p.second);
       auto ls = split_leading_lambdas(p.first);
       auto rs = split_leading_lambdas(p.second);
-      if (vars_equal(ls.first, rs.first)) {
-	auto la = split_args(ls.second);
-	if (la.first->is_var()) {
-	  auto potential = static_cast<const var*>(la.first);
-	  if (!free_in(potential, p.second)) {
-	    if (la.second.size() == ls.first.size()) {
-	      auto all_vars = true;
-	      for (int i = 0; i < la.second.size(); i++) {
-	    	auto e = la.second[i];
-	    	auto v = ls.first[i];
-	    	cout << "var compare" << endl;
-	    	if (*e != *v) {
-		  cout << "e = " << *e << endl;
-		  cout << "v = " << *v << endl;
-	    	  all_vars = false;
-	    	}
-	    	cout << "done var compare" << endl;
+      //      if (vars_equal(ls.first, rs.first)) {
+      auto la = split_args(ls.second);
+      if (la.first->is_var()) {
+	auto potential = static_cast<const var*>(la.first);
+	if (!free_in(potential, p.second)) {
+	  if (la.second.size() == ls.first.size()) {
+	    auto all_vars = true;
+	    for (int i = 0; i < la.second.size(); i++) {
+	      auto e = la.second[i];
+	      auto v = ls.first[i];
+	      cout << "var compare" << endl;
+	      if (*e != *v) {
+		cout << "e = " << *e << endl;
+		cout << "v = " << *v << endl;
+		all_vars = false;
 	      }
-	      if (all_vars) {
-	    	to_solve = p;
-		val = potential;
-	    	break;
-	      }
+	      cout << "done var compare" << endl;
+	    }
+	    if (all_vars) {
+	      to_solve = p;
+	      val = potential;
+	      break;
 	    }
 	  }
 	}
       }
+      //      }
     }
     cout << "-- end find_solvable_pair" << endl;
     return pair<const var*, tp>(val, to_solve);
