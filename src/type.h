@@ -24,6 +24,8 @@ namespace stt_res {
     }
   
     virtual int arity() const { assert(false); }
+
+    virtual void print(ostream& stream) const { assert(false); }
   
   };
 

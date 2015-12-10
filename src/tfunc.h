@@ -1,6 +1,7 @@
 #ifndef STT_RES_TFUNC_H
 #define STT_RES_TFUNC_H
 
+#include <iostream>
 #include <string>
 
 #include "src/type.h"
@@ -24,6 +25,14 @@ namespace stt_res {
 	return *in == *(other_f.in) && *out == *(other_f.out);
       }
       return false;
+    }
+
+    virtual void print(ostream& stream) const override {
+      stream << "(";
+      in->print(stream);
+      stream << " -> ";
+      out->print(stream);
+      stream << ")";
     }
   
   };

@@ -24,6 +24,11 @@ namespace stt_res {
       }
       return false;
     }
+
+    virtual void print(ostream& stream) const override {
+      stream << name;
+    }
+    
   };
 
 }

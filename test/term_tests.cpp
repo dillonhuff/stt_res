@@ -85,18 +85,14 @@ namespace stt_res {
   void lam_free_vars() {
     context c;
     auto k = c.mk_tvar("k");
-    auto ft = c.mk_tfunc(k, k);
+    auto ft = c.mk_tfunc(k, c.mk_tfunc(k, k));
     auto x1 = c.mk_var("x", k);
     auto x2 = c.mk_var("x", k);
     auto y = c.mk_var("y", k);
     auto f1 = c.mk_var("f", ft);
     auto f2 = c.mk_var("f", ft);
-    cout << "-- before xy" << endl;
-    auto xy = c.mk_ap(x1, y);
-    cout << "-- before fxy" << endl;
-    cout << *f1 << endl;
-    auto fxy = c.mk_ap(f1, xy);
-    cout << "-- before lfxy" << endl;
+    auto fx = c.mk_ap(f1, x1);
+    auto fxy = c.mk_ap(fx, y);
     auto lfxy = c.mk_lam(f2, fxy);
     auto lxlfxy = c.mk_lam(x2, lfxy);
     auto fvs = free_vars(lxlfxy);

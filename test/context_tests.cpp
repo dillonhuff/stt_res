@@ -114,21 +114,17 @@ namespace stt_res {
   void unify_func_var() {
     context c;
     auto t = c.mk_tvar("t");
-    auto ft = c.mk_tfunc(t, t);
+    auto ft = c.mk_tfunc(t, c.mk_tfunc(t, t));
     auto x = c.mk_var("x", t);
     auto y = c.mk_var("y", t);
     auto f = c.mk_var("f", ft);
     auto g = c.mk_var("g", ft);
     auto lf = c.mk_lam(x, c.mk_lam(y, c.mk_ap(c.mk_ap(f, x), y)));
     auto lg = c.mk_lam(x, c.mk_lam(y, c.mk_ap(c.mk_ap(g, x), y)));
-    cout << "-- " << *lf << endl;
-    cout << "-- " << *lg << endl;
     sub s{tp(lf, lg)};
     c.unify(s);
     auto slf = c.apply_sub(s, lf);
     auto slg = c.apply_sub(s, lg);
-    cout << "-- " << *slf << endl;
-    cout << "-- " << *slg << endl;
     test_assertion(*slf == *slg, "unify_func_var");
   }
 

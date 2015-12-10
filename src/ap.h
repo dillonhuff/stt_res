@@ -22,8 +22,6 @@ namespace stt_res {
     ap(const term* lp, const term* rp) {
       l = lp;
       r = rp;
-      cout << "start ap" << endl;
-      cout << "-- " << *lp << "\t\t" << *rp << endl;
       if (lp->t->is_func()) {
       	auto l_t_f = static_cast<const tfunc*>(lp->t);
       	auto l_t_in = l_t_f->in;
@@ -31,8 +29,10 @@ namespace stt_res {
       	l = lp;
       	r = rp;
       	t = l_t_f->out;
+      } else {
+	cout << *(lp->t) << endl;
+	assert(false);
       }
-      cout << "end ap" << endl;
     }
 
     virtual bool is_ap() const override {
