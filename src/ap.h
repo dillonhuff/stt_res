@@ -26,8 +26,6 @@ namespace stt_res {
       	auto l_t_f = static_cast<const tfunc*>(lp->t);
       	auto l_t_in = l_t_f->in;
       	assert(*l_t_in == *(rp->t));
-      	l = lp;
-      	r = rp;
       	t = l_t_f->out;
       } else {
 	cout << *(lp->t) << endl;
