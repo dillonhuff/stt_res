@@ -32,7 +32,7 @@ namespace stt_res {
     
   public:
 
-    const var* mk_var(string name) { return new var(name); }
+    const var* mk_var(string name, type* t) { return new var(name, t); }
     const ap* mk_ap(const term* l, const term* r) { return new ap(l, r); }
     const lam* mk_lam(const var* v, const term* e) { return new lam(v, e); }
 

@@ -5,6 +5,8 @@
 
 #include "src/ap.h"
 #include "src/lam.h"
+#include "src/tfunc.h"
+#include "src/tvar.h"
 #include "src/var.h"
 
 namespace stt_res {

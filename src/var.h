@@ -14,7 +14,10 @@ namespace stt_res {
   public:
     string name;
     
-  var(string n) : name(n) {}
+    var(string n, type* tp) {
+      name = n;
+      t = tp;
+    }
 
     virtual bool is_var() const override {
       return true;

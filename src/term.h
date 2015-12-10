@@ -5,12 +5,16 @@
 #include <string>
 #include <vector>
 
+#include "src/type.h"
+
 using namespace std;
 
 namespace stt_res {
   
   class term {
   public:
+
+    type* t;
 
     virtual bool is_lam() const {
       return false;
