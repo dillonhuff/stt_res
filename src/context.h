@@ -42,6 +42,8 @@ namespace stt_res {
 
     const term* apply_sub(stt_res::sub& s, const term* t);
 
+    const term* beta_reduce(const term* t);
+
   };
 
 }

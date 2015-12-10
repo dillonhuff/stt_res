@@ -124,6 +124,27 @@ namespace stt_res {
     }
   }
 
+  const term* context::beta_reduce(const term* t) {
+    if (t->is_var()) {
+      return t;
+    }
+    if (t->is_lam()) {
+      auto t_lam = static_cast<const lam*>(t);
+      return mk_lam(t_lam->v, beta_reduce(t_lam->e));
+    }
+    if (t->is_ap()) {
+      auto t_ap = static_cast<const ap*>(t);
+      auto br_l = beta_reduce(t_ap->l);
+      auto br_r = beta_reduce(t_ap->r);
+      if (br_l->is_lam()) {
+	auto br_l_lam = static_cast<const lam*>(br_l);
+	return sub(br_l_lam->v, br_r, br_l_lam->e);
+      }
+      return mk_ap(br_l, br_r);
+    }
+    assert(false);
+  }
+
   const term* context::apply_sub(stt_res::sub& s, const term* t) {
     auto t_loc = &t;
     for (auto p : s) {
@@ -133,7 +154,8 @@ namespace stt_res {
       auto new_t = sub(v, e, *t_loc);
       t_loc = &new_t;
     }
-    return *t_loc;
+    auto br = beta_reduce(*t_loc);
+    return br;
   }
 
   const term* context::append_lambdas(vector<const var*> vars, const term* t) {
