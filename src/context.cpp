@@ -58,22 +58,22 @@ namespace stt_res {
 
   stt_res::sub context::reduce_args(const term* l, const term* r) {
     stt_res::sub s;
-    // auto ls = split_leading_lambdas(l);
-    // auto rs = split_leading_lambdas(r);
-    // if (elements_equal(ls.first, rs.first)) {
-    //   auto la = split_args(l.second);
-    //   auto ra = split_args(r.second);
-    //   if (*(la.first) == *(ra.first)) {
-    // 	auto largs = la.second;
-    // 	auto rargs = ra.second;
-    // 	assert(largs.size() == rargs.size());
-    // 	for (int i = 0; i < largs.size(); i++) {
-    // 	  auto la = append_lambdas(ls.first, largs[i]);
-    // 	  auto ra = append_lambdas(ls.first, rargs[i]);
-    // 	  s.push_back(tp(largs[i], rargs[i]));
-    // 	}
-    //   }
-    // }
+    auto ls = split_leading_lambdas(l);
+    auto rs = split_leading_lambdas(r);
+    if (vars_equal(ls.first, rs.first)) {
+      auto la = split_args(ls.second);
+      auto ra = split_args(rs.second);
+      if (*(la.first) == *(ra.first)) {
+    	auto largs = la.second;
+    	auto rargs = ra.second;
+    	assert(largs.size() == rargs.size());
+    	for (int i = 0; i < largs.size(); i++) {
+    	  auto newArgL = append_lambdas(ls.first, largs[i]);
+    	  auto newArgR = append_lambdas(rs.first, rargs[i]);
+    	  s.push_back(tp(newArgL, newArgR));
+    	}
+      }
+    }
     return s;
   }
 
@@ -81,6 +81,7 @@ namespace stt_res {
     for (auto p : s) {
       auto subpairs = reduce_args(p.first, p.second);
       if (subpairs.size() > 0) {
+	s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); }), s.end());
 	s.insert(s.end(), subpairs.begin(), subpairs.end());
       }
     }
@@ -111,4 +112,15 @@ namespace stt_res {
     }
     return *t_loc;
   }
+
+  const term* context::append_lambdas(vector<const var*> vars, const term* t) {
+    const term* const* t_loc = &t;
+    for (auto rit = vars.rbegin(); rit != vars.rend(); ++rit) {
+      auto v = *rit;
+      auto new_lam = static_cast<const term*>(mk_lam(v, t));
+      t_loc = &new_lam;
+    }
+    return *t_loc;
+  }
+
 }

@@ -34,4 +34,47 @@ namespace stt_res {
     return stream;
   }
 
+  pair<vector<const var*>, const term*> split_leading_lambdas(const term* t) {
+    const term* const* t_loc = &t;
+    vector<const var*> vs;
+    while (true) {
+      auto m = *t_loc;
+      if (m->is_lam()) {
+	auto m_lam = static_cast<const lam*>(m);
+	vs.push_back(m_lam->v);
+	t_loc = &(m_lam->e);
+      } else {
+	return pair<vector<const var*>, const term*>(vs, m);
+      }
+    }
+    assert(false);
+  }
+
+  pair<const term*, vector<const term*>> split_args(const term* t) {
+    const term* const* t_loc = &t;
+    vector<const term*> args;
+    while (true) {
+      auto m = *t_loc;
+      if (!m->is_ap()) {
+	return pair<const term*, vector<const term*>>(m, args);
+      }
+      auto m_ap = static_cast<const ap*>(m);
+      args.push_back(m_ap->r);
+      t_loc = &(m_ap->l);
+    }
+    assert(false);
+  }
+
+  bool vars_equal(vector<const var*> l, vector<const var*> r) {
+    if (l.size() != r.size()) {
+      return false;
+    }
+    for (int i = 0; i < l.size(); i++) {
+      if (*(l[i]) != *(r[i])) {
+	return false;
+      }
+    }
+    return true;
+  }
+
 }

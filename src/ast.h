@@ -13,5 +13,13 @@ namespace stt_res {
 
   ostream& operator<<(ostream& stream, const term& other);
 
+  pair<vector<const var*>, const term*> split_leading_lambdas(const term* t);
+
+  pair<const term*, vector<const term*>> split_args(const term* t);
+
+  const term* append_lambdas(vector<const var*> vars, const term* t);
+
+  bool vars_equal(vector<const var*> l, vector<const var*> r);
+
 }
 #endif
