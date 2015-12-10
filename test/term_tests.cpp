@@ -62,40 +62,40 @@ namespace stt_res {
     auto k = c.mk_tvar("k");
     auto x = c.mk_var("x", k);
     auto y = c.mk_var("y", k);
-    tfunc ft(k, k);
-    var f("f", &ft);
-    ap fx(&f, x);
-    lam lfx(x, &fx);
-    lam ly(x, y);
-    test_assertion(lfx != ly, "diff_lam_neq");
+    auto ft = c.mk_tfunc(k, k);
+    auto f = c.mk_var("f", ft);
+    auto fx = c.mk_ap(f, x);
+    auto lfx = c.mk_lam(x, fx);
+    auto ly = c.mk_lam(x, y);
+    test_assertion(*lfx != *ly, "diff_lam_neq");
   }
 
   void same_lam_eq() {
     context c;
     auto k = c.mk_tvar("k");
-    tfunc ft(k, k);
+    auto ft = c.mk_tfunc(k, k);
     auto x = c.mk_var("x", k);
-    var f("f", &ft);
-    ap fx(&f, x);
-    lam lfx1(x, &fx);
-    lam lfx2(x, &fx);
-    test_assertion(lfx1 == lfx2, "same_lam_eq");
+    auto f = c.mk_var("f", ft);
+    auto fx = c.mk_ap(f, x);
+    auto lfx1 = c.mk_lam(x, fx);
+    auto lfx2 = c.mk_lam(x, fx);
+    test_assertion(*lfx1 == *lfx2, "same_lam_eq");
   }
 
   void lam_free_vars() {
     context c;
     auto k = c.mk_tvar("k");
-    tfunc ft(k, k);
-    var x1("x", k);
-    var x2("x", k);
+    auto ft = c.mk_tfunc(k, k);
+    auto x1 = c.mk_var("x", k);
+    auto x2 = c.mk_var("x", k);
     auto y = c.mk_var("y", k);
-    var f1("f", &ft);
-    var f2("f", &ft);
-    ap xy(&x1, y);
-    ap fxy(&f1, &xy);
-    lam lfxy(&f2, &fxy);
-    lam lxlfxy(&x2, &lfxy);
-    auto fvs = free_vars(&lxlfxy);
+    auto f1 = c.mk_var("f", ft);
+    auto f2 = c.mk_var("f", ft);
+    auto xy = c.mk_ap(x1, y);
+    auto fxy = c.mk_ap(f1, xy);
+    auto lfxy = c.mk_lam(f2, fxy);
+    auto lxlfxy = c.mk_lam(x2, lfxy);
+    auto fvs = free_vars(lxlfxy);
     test_assertion(fvs.size() == 1 && *(fvs[0]) == *y, "lam_free_vars");
   }
 
