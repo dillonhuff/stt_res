@@ -98,10 +98,6 @@ namespace stt_res {
 	if (la.first->is_var()) {
 	  auto potential = static_cast<const var*>(la.first);
 	  if (!free_in(potential, p.second)) {
-	    // if (la.second.size() == ls.first.size()) {
-	    //   val = potential;
-	    //   to_solve = p;
-	    // }
 	    if (la.second.size() == ls.first.size()) {
 	      auto all_vars = true;
 	      for (int i = 0; i < la.second.size(); i++) {
@@ -109,6 +105,8 @@ namespace stt_res {
 	    	auto v = ls.first[i];
 	    	cout << "var compare" << endl;
 	    	if (*e != *v) {
+		  cout << "e = " << *e << endl;
+		  cout << "v = " << *v << endl;
 	    	  all_vars = false;
 	    	}
 	    	cout << "done var compare" << endl;
@@ -135,6 +133,7 @@ namespace stt_res {
     cout << "about to check null" << endl;
     
     if (val == nullptr) {
+      cout << "Is null" << endl;
       return;
     }
 

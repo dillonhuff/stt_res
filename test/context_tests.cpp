@@ -121,6 +121,8 @@ namespace stt_res {
     auto g = c.mk_var("g", ft);
     auto lf = c.mk_lam(x, c.mk_lam(y, c.mk_ap(c.mk_ap(f, x), y)));
     auto lg = c.mk_lam(x, c.mk_lam(y, c.mk_ap(c.mk_ap(g, x), y)));
+    cout << "-- " << *lf << endl;
+    cout << "-- " << *lg << endl;    
     sub s{tp(lf, lg)};
     c.unify(s);
     auto slf = c.apply_sub(s, lf);
@@ -140,9 +142,7 @@ namespace stt_res {
     cout << "-- " << *gx << endl;
     cout << "-- " << *fx << endl;
     sub s{tp(fx, gx)};
-    cout << "-- start unifying" << endl;
     c.unify(s);
-    cout << "-- done unifying" << endl;
     for (auto p : s) {
       cout << *(p.first) << " / " << *(p.second) << endl;
     }

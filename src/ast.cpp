@@ -57,6 +57,7 @@ namespace stt_res {
     while (true) {
       auto m = *t_loc;
       if (!m->is_ap()) {
+	reverse(args.begin(), args.end());
 	return pair<const term*, vector<const term*>>(m, args);
       }
       auto m_ap = static_cast<const ap*>(m);
