@@ -17,6 +17,8 @@ namespace stt_res {
       return true;
     }
 
+    tvar() {}
+
     virtual bool operator==(const type& other) const override {
       if (other.is_var()) {
 	auto o = static_cast<const tvar&>(other);

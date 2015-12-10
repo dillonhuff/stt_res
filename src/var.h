@@ -13,6 +13,8 @@ namespace stt_res {
   class var : public term {
   public:
     string name;
+
+    ~var() {}
     
     var(string n, const type* tp) {
       name = n;

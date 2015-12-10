@@ -13,6 +13,8 @@ namespace stt_res {
     const type* out;
 
   tfunc(const type* in , const type* out) : in(in), out(out) {}
+
+    ~tfunc() {}
   
     virtual bool is_func() const override {
       return true;

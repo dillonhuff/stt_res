@@ -16,6 +16,8 @@ namespace stt_res {
 
     const type* t;
 
+    ~term() {}
+
     virtual bool is_lam() const {
       return false;
     }
