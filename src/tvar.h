@@ -5,15 +5,26 @@
 
 #include "src/type.h"
 
-class tvar : public type {
- public:
-  string name;
-
- tvar(string n) : name(n) {}
+namespace stt_res {
   
-  virtual bool is_var() const override {
-    return true;
-  }
-};
+  class tvar : public type {
+  public:
+    string name;
 
+  tvar(string n) : name(n) {}
+  
+    virtual bool is_var() const override {
+      return true;
+    }
+
+    virtual bool operator==(const type& other) const override {
+      if (other.is_var()) {
+	auto o = static_cast<const tvar&>(other);
+	return name == o.name;
+      }
+      return false;
+    }
+  };
+
+}
 #endif

@@ -5,6 +5,7 @@
 #include <string>
 
 #include "src/term.h"
+#include "src/tfunc.h"
 
 using namespace std;
 
@@ -17,7 +18,16 @@ namespace stt_res {
     const term* l;
     const term* r;
     
-  ap(const term* lp, const term* rp) : l(lp), r(rp) {}
+    ap(const term* lp, const term* rp) {
+      if (lp->t->is_func()) {
+	auto l_t_f = static_cast<const tfunc*>(lp->t);
+	auto l_t_in = l_t_f->in;
+	assert(*l_t_in == *(rp->t));
+	l = lp;
+	r = rp;
+	t = l_t_f->out;
+      }
+    }
 
     virtual bool is_ap() const override {
       return true;

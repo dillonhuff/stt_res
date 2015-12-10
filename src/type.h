@@ -1,18 +1,30 @@
 #ifndef STT_RES_TYPE_H
 #define STT_RES_TYPE_H
 
-class type {
-
-  virtual bool is_func() const {
-    return false;
-  }
-
-  virtual bool is_var() const {
-    return false;
-  }
+namespace stt_res {
   
-  virtual int arity() const { assert(false); }
+  class type {
+  public:
+    virtual bool is_func() const {
+      return false;
+    }
+
+    virtual bool is_var() const {
+      return false;
+    }
+
+    virtual bool operator==(const type& other) const {
+      assert(false);
+    }
+
+    virtual bool operator!=(const type& other) const {
+      return !(*this == other);
+    }
   
-};
+    virtual int arity() const { assert(false); }
+  
+  };
+ 
+}
 
 #endif
