@@ -52,9 +52,11 @@ namespace stt_res {
   }
 
   vector<const var*> context::outer_imitation_binding_args(const term* f) {
+    cout << "-- outer f: " << *f << endl;
     auto tps = f->t->arg_types();
     vector<const var*> arg_vars;
     for (auto t : tps) {
+      cout << "-- outer tps: " << *t << endl;;
       arg_vars.push_back(fresh_var("y", t));
     }
     return arg_vars;
@@ -93,9 +95,17 @@ namespace stt_res {
   }
 
   const term* context::imitation_binding(const term* a, const term* f) {
+    cout << "-- start imitation binding" << endl;
+    cout << "-- f: " << *f << endl;
+    cout << "-- ftype: " << *(f->t) << endl;
     auto ys = outer_imitation_binding_args(f);
+    for (auto y : ys) {
+      cout << "-- y: " << *y << endl;
+    }
     auto hs = inner_imitation_binding_args(ys, a);
     auto imitation_binding = append_lambdas(ys, apply_args(a, hs));
+    cout << "-- final binding: " << *imitation_binding << endl;
+    cout << "-- end imitation binding" << endl;
     return imitation_binding;
   }
 
@@ -284,7 +294,8 @@ namespace stt_res {
     const term* const* t_loc = &t;
     for (auto rit = vars.rbegin(); rit != vars.rend(); ++rit) {
       auto v = *rit;
-      auto new_lam = static_cast<const term*>(mk_lam(v, t));
+      auto new_lam = static_cast<const term*>(mk_lam(v, *t_loc));
+      cout << "Appended " << *new_lam << endl;
       t_loc = &new_lam;
     }
     return *t_loc;

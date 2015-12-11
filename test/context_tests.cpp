@@ -196,6 +196,28 @@ namespace stt_res {
     test_assertion(*slfx == *slgx, "unify_lam_funcs");
   }
 
+  void unify_funcs_multi_var() {
+    context c;
+    auto t = c.mk_tvar("t");
+    auto ft = c.mk_tfunc(t, c.mk_tfunc(t, t));
+    auto x = c.mk_var("x", t);
+    auto y = c.mk_var("y", t);
+    auto f = c.mk_var("f", ft);
+    auto g = c.mk_var("g", ft);
+    auto fxy = c.mk_ap(c.mk_ap(f, x), y);
+    auto gxy = c.mk_ap(c.mk_ap(g, x), y);
+    cout << "-- " << *gxy << endl;
+    cout << "-- " << *fxy << endl;
+    sub s{tp(fxy, gxy)};
+    c.unify(s);
+    for (auto p : s) {
+      cout << *(p.first) << " / " << *(p.second) << endl;
+    }
+    auto sfx = c.apply_sub(s, fxy);
+    auto sgx = c.apply_sub(s, gxy);
+    test_assertion(*sfx == *sgx, "unify_funcs_multi_var");
+  }
+
   void all_context_tests() {
     make_var();
     dont_sub_var();
@@ -210,6 +232,7 @@ namespace stt_res {
     unify_2();
     unify_funcs();
     unify_lam_funcs();
+    unify_funcs_multi_var();
   }
 
 }

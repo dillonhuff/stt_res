@@ -25,10 +25,17 @@ namespace stt_res {
       if (lp->t->is_func()) {
       	auto l_t_f = static_cast<const tfunc*>(lp->t);
       	auto l_t_in = l_t_f->in;
+	/* cout << "-- lp: " << *lp << endl; */
+	/* cout << "-- rp: " << *rp << endl; */
+	/* cout << "-- lp type: " << *(lp->t) << endl; */
+	/* cout << "-- rp type: " << *(rp->t) << endl;	 */
       	assert(*l_t_in == *(rp->t));
       	t = l_t_f->out;
       } else {
-	cout << *(lp->t) << endl;
+	cout << "-- lp: " << *lp << endl;
+	cout << "-- rp: " << *rp << endl;
+	cout << "-- lp type: " << *(lp->t) << endl;
+	cout << "-- rp type: " << *(rp->t) << endl;		
 	assert(false);
       }
     }
