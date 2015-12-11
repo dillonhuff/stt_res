@@ -23,7 +23,8 @@ namespace stt_res {
   class context {
   protected:
     int next_unique_num;
-    
+
+    pair<const var*, tp> pair_is_solvable(tp p);
     bool system_is_solved(stt_res::sub& x);
     void delete_identical_pairs(stt_res::sub& x);
     bool pair_is_solved(const term* l, const term* r);
@@ -70,6 +71,8 @@ namespace stt_res {
     const var* fresh_var(string prefix, const type* t);
 
   };
+
+  void erase_pair(stt_res::tp p, stt_res::sub& s);
 
 }
 

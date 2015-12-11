@@ -52,11 +52,11 @@ namespace stt_res {
   }
 
   vector<const var*> context::outer_imitation_binding_args(const term* f) {
-    cout << "-- outer f: " << *f << endl;
+    //    cout << "-- outer f: " << *f << endl;
     auto tps = f->t->arg_types();
     vector<const var*> arg_vars;
     for (auto t : tps) {
-      cout << "-- outer tps: " << *t << endl;;
+      //      cout << "-- outer tps: " << *t << endl;;
       arg_vars.push_back(fresh_var("y", t));
     }
     return arg_vars;
@@ -95,17 +95,9 @@ namespace stt_res {
   }
 
   const term* context::imitation_binding(const term* a, const term* f) {
-    cout << "-- start imitation binding" << endl;
-    cout << "-- f: " << *f << endl;
-    cout << "-- ftype: " << *(f->t) << endl;
     auto ys = outer_imitation_binding_args(f);
-    for (auto y : ys) {
-      cout << "-- y: " << *y << endl;
-    }
     auto hs = inner_imitation_binding_args(ys, a);
     auto imitation_binding = append_lambdas(ys, apply_args(a, hs));
-    cout << "-- final binding: " << *imitation_binding << endl;
-    cout << "-- end imitation binding" << endl;
     return imitation_binding;
   }
 
@@ -180,42 +172,46 @@ namespace stt_res {
     for (auto p : s) {
       auto subpairs = reduce_args(p.first, p.second);
       if (subpairs.size() > 0) {
-	s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); }), s.end());
+	erase_pair(p, s);
 	s.insert(s.end(), subpairs.begin(), subpairs.end());
 	break;
       }
     }
   }
 
-  pair<const var*, tp> context::find_solvable_pair(stt_res::sub& s) {
-    tp to_solve;
-    const var* val = nullptr;
-    for (auto p : s) {
-      auto matched = match_lambdas(p.first, p.second);
-      auto lam_vars = matched.first;
-      auto ft = matched.second.first;
-      auto la = split_args(ft);
-      if (la.first->is_var()) {
-	auto potential = static_cast<const var*>(la.first);
-	if (!free_in(potential, p.second)) {
-	  if (la.second.size() == lam_vars.size()) {
-	    auto all_vars = true;
-	    for (int i = 0; i < lam_vars.size(); i++) {
-	      auto e = la.second[i];
-	      auto v = lam_vars[i];
-	      if (*e != *v) {
-		all_vars = false;
-	      }
-	    }
-	    if (all_vars) {
-	      to_solve = p;
-	      val = potential;
-	      break;
+  pair<const var*, tp> context::pair_is_solvable(tp p) {
+    auto matched = match_lambdas(p.first, p.second);
+    auto lam_vars = matched.first;
+    auto ft = matched.second.first;
+    auto la = split_args(ft);
+    if (la.first->is_var()) {
+      auto potential = static_cast<const var*>(la.first);
+      if (!free_in(potential, p.second)) {
+	if (la.second.size() == lam_vars.size()) {
+	  auto all_vars = true;
+	  for (int i = 0; i < lam_vars.size(); i++) {
+	    auto e = la.second[i];
+	    auto v = lam_vars[i];
+	    if (*e != *v) {
+	      all_vars = false;
 	    }
 	  }
 	}
       }
     }
+    tp dummy;
+    return pair<const var*, tp>(nullptr, dummy);
+  }
+
+  pair<const var*, tp> context::find_solvable_pair(stt_res::sub& s) {
+    for (auto p : s) {
+      auto res = pair_is_solvable(p);
+      if (res.first != nullptr) {
+	return res;
+      }
+    }
+    tp to_solve;
+    const var* val = nullptr;    
     return pair<const var*, tp>(val, to_solve);
   }
 
@@ -227,8 +223,9 @@ namespace stt_res {
     if (val == nullptr) {
       return;
     }
+
+    erase_pair(to_solve, s);
     
-    s.erase(remove_if(s.begin(), s.end(), [to_solve](tp r) { return *(r.first) == *(to_solve.first) && *(r.second) == *(to_solve.second); }), s.end());
     auto new_pair = tp(val, to_solve.second);
     stt_res::sub new_s{new_pair};
     for (int i = 0; i < s.size(); i++) {
@@ -295,10 +292,14 @@ namespace stt_res {
     for (auto rit = vars.rbegin(); rit != vars.rend(); ++rit) {
       auto v = *rit;
       auto new_lam = static_cast<const term*>(mk_lam(v, *t_loc));
-      cout << "Appended " << *new_lam << endl;
       t_loc = &new_lam;
     }
     return *t_loc;
+  }
+
+  void erase_pair(stt_res::tp p, stt_res::sub& s) {
+    s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); }), s.end());
+    s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.second) && *(r.second) == *(p.first); }), s.end());
   }
 
 }
