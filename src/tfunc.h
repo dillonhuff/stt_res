@@ -34,6 +34,12 @@ namespace stt_res {
       out->print(stream);
       stream << ")";
     }
+
+    virtual vector<const type*> arg_types() const override {
+      auto t = out->arg_types();
+      t.push_back(in);
+      return t;
+    }
   
   };
 

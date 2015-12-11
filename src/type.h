@@ -1,6 +1,8 @@
 #ifndef STT_RES_TYPE_H
 #define STT_RES_TYPE_H
 
+#include <vector>
+
 using namespace std;
 
 namespace stt_res {
@@ -26,6 +28,10 @@ namespace stt_res {
     virtual int arity() const { assert(false); }
 
     virtual void print(ostream& stream) const { assert(false); }
+
+    virtual vector<const type*> arg_types() const {
+      assert(false);
+    }
   
   };
 

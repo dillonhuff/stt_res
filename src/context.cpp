@@ -36,6 +36,97 @@ namespace stt_res {
     assert(false);
   }
 
+  const var* context::fresh_var(string prefix, const type* t) {
+    auto n = prefix + to_string(next_unique_num);
+    next_unique_num++;
+    return mk_var(n, t);
+  }
+
+  const term* context::apply_args(const term* t, vector<const term*> args) {
+    const term* const* t_loc = &t;
+    for (auto a : args) {
+      auto r = static_cast<const term*>(mk_ap(*t_loc, a));
+      t_loc = &r;
+    }
+    return *t_loc;
+  }
+
+  vector<const var*> context::outer_imitation_binding_args(const term* f) {
+    auto tps = f->t->arg_types();
+    vector<const var*> arg_vars;
+    for (auto t : tps) {
+      arg_vars.push_back(fresh_var("y", t));
+    }
+    return arg_vars;
+  }
+
+  const term* context::inner_imitation_binding_arg(vector<const var*> ys,
+						   const type* t) {
+    auto tps = t->arg_types();
+    vector<const term*> all_args;
+    vector<const var*> zs;
+    for (auto tp : tps) {
+      auto v = fresh_var("z", tp);
+      all_args.push_back(static_cast<const term*>(v));
+      zs.push_back(v);
+    }
+    const type* const* t_loc = &t;
+    for (vector<const term*>::reverse_iterator i = all_args.rbegin(); 
+    	 i != all_args.rend(); ++i ) {
+      auto ft = mk_tfunc((*i)->t, *t_loc);
+      t_loc = &ft;
+    }
+    auto h_type = *t_loc;
+    auto h = fresh_var("H", h_type);
+    return append_lambdas(zs, apply_args(h, all_args));
+  }
+
+  vector<const term*> context::inner_imitation_binding_args(vector<const var*> ys,
+							    const term* a) {
+    auto tps = a->t->arg_types();
+    vector<const term*> args;
+    for (auto t : tps) {
+      auto h = inner_imitation_binding_arg(ys, t);
+      args.push_back(h);
+    }
+    return args;
+  }
+
+  const term* context::imitation_binding(const term* a, const term* f) {
+    auto ys = outer_imitation_binding_args(f);
+    auto hs = inner_imitation_binding_args(ys, a);
+    auto imitation_binding = append_lambdas(ys, apply_args(a, hs));
+    return imitation_binding;
+  }
+
+  void context::add_imitation_binding(stt_res::sub& s) {
+    tp to_sub;
+    auto sub_any = false;
+    for (auto p : s) {
+      auto left_lam_term = split_leading_lambdas(p.first);
+      auto right_lam_term = split_leading_lambdas(p.second);
+      if (vars_equal(left_lam_term.first, right_lam_term.first)) {
+	auto left_head_and_args = split_args(left_lam_term.second);
+	auto right_head_and_args = split_args(right_lam_term.second);
+	auto left_head = left_head_and_args.first;
+	auto right_head = right_head_and_args.first;
+	if (left_head->is_var() &&
+	    right_head->is_var()) {
+	  auto right_head_var = static_cast<const var*>(right_head);
+	  if (free_in(right_head_var, p.second) &&
+	      *left_head != *right_head) {
+	    sub_any = true;
+	    auto t = imitation_binding(right_head, left_head);
+	    to_sub = tp(left_head, t);
+	  }
+	}
+      }
+    }
+    if (sub_any) {
+      s.push_back(to_sub);
+    }
+  }
+
   bool context::pair_is_solved(const term* l, const term* r) {
     if (l->is_var()) {
       auto vr = static_cast<const var*>(l);
@@ -148,6 +239,7 @@ namespace stt_res {
       delete_identical_pairs(s);
       reduce_pair_args(s);
       solve_vars(s);
+      add_imitation_binding(s);
       if (v == s) {
 	return UNIFY_FAILED;
       }

@@ -1,5 +1,5 @@
 CC := clang++
-CXX_FLAGS := -std=c++11 -I. -Wall -Werror
+CXX_FLAGS := -std=c++11 -I. -Wall -Werror -g
 
 SRC_FILES := $(shell find . -name "*.cpp")
 HEADER_FILES := $(shell find . -name "*.h")

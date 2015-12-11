@@ -28,7 +28,11 @@ namespace stt_res {
     virtual void print(ostream& stream) const override {
       stream << name;
     }
-    
+
+    virtual vector<const type*> arg_types() const override {
+      vector<const type*> v{};
+      return v;
+    }
   };
 
 }
