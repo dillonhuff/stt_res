@@ -25,9 +25,7 @@ namespace stt_res {
 
     pair<const var*, tp> pair_is_solvable(tp p);
     pair<const var*, tp> term_solvable(const term* l, const term* r);
-    bool system_is_solved(stt_res::disagreement_set& x);
     void delete_identical_pairs(stt_res::disagreement_set& x);
-    bool pair_is_solved(stt_res::disagreement_set& s, const term* l, const term* r);
     void reduce_pair_args(stt_res::disagreement_set& s);
     stt_res::sub reduce_args(const term* l, const term* r);
     const term* append_lambdas(vector<const var*> vars, const term* t);

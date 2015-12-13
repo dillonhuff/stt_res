@@ -129,46 +129,6 @@ namespace stt_res {
     }
   }
 
-  bool context::pair_is_solved(disagreement_set& s, const term* l, const term* r) {
-    if (l->is_var()) {
-      auto vr = static_cast<const var*>(l);
-      return !free_in(vr, r);
-    }
-    return false;
-  }
-
-  bool context::system_is_solved(disagreement_set& s) {
-    for (int i = 0; i < s.size(); i++) {
-      auto pair_solved = true;
-      auto l = s[i].first;
-      auto r = s[i].second;
-      if (l->is_var() &&
-    	  !free_in(static_cast<const var*>(l), r)) {
-    	auto vr = static_cast<const var*>(l);
-    	auto doesnt_appear_elsewhere = true;
-    	for (int j = 0; j < s.size(); j++) {
-    	  if (i != j) {
-    	    if (free_in(vr, s[j].first) || free_in(vr, s[j].second)) {
-	      doesnt_appear_elsewhere = false;
-    	    }
-    	  }
-    	}
-    	if (!doesnt_appear_elsewhere) {
-    	  pair_solved = false;
-    	}
-      } else {
-    	return false;
-      }
-      if (!pair_solved) {
-    	return false;
-      }
-    }
-    return true;
-    // auto num_solved_pairs = count_if(s.begin(), s.end(), [this, &s](tp p) {return pair_is_solved(s, p.first, p.second);});
-    // auto num_pairs = s.size();
-    // return num_solved_pairs == num_pairs;
-  }
-
   stt_res::sub context::reduce_args(const term* l, const term* r) {
     stt_res::sub s;
     auto ls = split_leading_lambdas(l);
@@ -272,8 +232,11 @@ namespace stt_res {
   }
 
   res_code context::unify(disagreement_set& s) {
-    while (true) {
-      if (system_is_solved(s)) {
+    int max = 10;
+    int i = 0;
+    while (i < max) {
+      i++;
+      if (s.is_solved()) {
 	cout << "-- FINAL SUB " << endl;
 	for (auto p : s) {
 	  cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
@@ -285,7 +248,7 @@ namespace stt_res {
       s.delete_duplicates();
       reduce_pair_args(s);
       s.delete_duplicates();
-      if (system_is_solved(s)) {
+      if (s.is_solved()) {
 	cout << "-- FINAL SUB " << endl;
 	for (auto p : s) {
 	  cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
@@ -297,6 +260,7 @@ namespace stt_res {
       add_imitation_binding(s);
       s.delete_duplicates();
     }
+    return UNIFY_FAILED;
   }
 
   const term* context::beta_reduce(const term* t) {
