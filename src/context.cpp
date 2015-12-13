@@ -154,6 +154,12 @@ namespace stt_res {
     for (auto p : s) {
       auto subpairs = reduce_args(p.first, p.second);
       if (subpairs.size() > 0) {
+	cout << "reduce_pair_args" << endl;
+	cout << "to erase " << *(p.first) << ", " << *(p.second) << endl;
+	cout << "to insert " << endl;
+	for (auto p : subpairs) {
+	  cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
+	}		
 	s.erase_pair(p);
 	s.add_pairs(subpairs);
 	//s.insert(s.end(), subpairs.begin(), subpairs.end());
@@ -222,6 +228,7 @@ namespace stt_res {
     
     auto new_pair = tp(val, to_solve.second);
     stt_res::sub new_s{new_pair};
+    // TODO: Replace with c++ equivalent of set map
     // for (int i = 0; i < s.size(); i++) {
     //   auto p = s[i];
     //   auto l = p.first;
@@ -255,7 +262,13 @@ namespace stt_res {
       }      
       solve_vars(s);
       add_imitation_binding(s);
+      cout << "s.size() == " << s.size() << endl;
+      for (auto p : s) {
+	cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
+      }      
     }
+    cout << "COULD NOT UNIFY" << endl;
+    assert(false);
     return UNIFY_FAILED;
   }
 

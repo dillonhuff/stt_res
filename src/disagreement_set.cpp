@@ -2,22 +2,6 @@
 
 namespace stt_res {
   
-  // void disagreement_set::delete_duplicates() {
-  //     stt_res::sub duplicates;
-  //     for (auto p : s) {
-  // 	auto num_instances = count_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); });
-  // 	if (num_instances > 1) {
-  // 	  duplicates.push_back(p);
-  // 	}
-  //     }
-  //     for (auto p : duplicates) {
-  // 	erase_pair(p);
-  //     }
-  //     for (auto p : duplicates) {
-  // 	insert(p);
-  //     }
-  //   }
-
   bool disagreement_set::is_solved() {
       // for (int i = 0; i < s.size(); i++) {
       // 	auto pair_solved = true;
@@ -45,7 +29,7 @@ namespace stt_res {
       // 	}
       // }
       // return true;
-      auto num_solved_pairs = count_if(s.begin(), s.end(), [this](tp p) {return pair_is_solved(p.first, p.second);});
+      auto num_solved_pairs = count_if(s.begin(), s.end(), [this](const tp& p) {return pair_is_solved(p.first, p.second);});
       auto num_pairs = s.size();
       return num_solved_pairs == num_pairs;
     }
