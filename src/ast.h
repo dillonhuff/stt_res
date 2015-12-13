@@ -1,6 +1,7 @@
 #ifndef STT_RES_AST_H
 #define STT_RES_AST_H
 
+#include <set>
 #include <vector>
 
 #include "src/ap.h"
@@ -10,9 +11,24 @@
 #include "src/var.h"
 
 namespace stt_res {
+
+  struct term_comparator {
+    bool operator()(const term* l, const term* r) {
+      return false;
+    }
+  };
   
   typedef pair<const term*, const term*> tp;
+
+  struct tp_comparator {
+    bool operator()(tp l, tp r) {
+      term_comparator t;
+      return t(l.first, r.first);
+    }
+  };
+    
   typedef vector<tp> sub;
+  typedef std::set<tp, tp_comparator> dset;
 
   vector<const var*> free_vars(const term* t);
 

@@ -125,7 +125,7 @@ namespace stt_res {
       }
     }
     if (sub_any) {
-      s.push_back(to_sub);
+      s.insert(to_sub);
     }
   }
 
@@ -222,13 +222,13 @@ namespace stt_res {
     
     auto new_pair = tp(val, to_solve.second);
     stt_res::sub new_s{new_pair};
-    for (int i = 0; i < s.size(); i++) {
-      auto p = s[i];
-      auto l = p.first;
-      auto r = p.second;
-      s[i] = tp(apply_sub(new_s, l), apply_sub(new_s, r));
-    }
-    s.push_back(new_pair);
+    // for (int i = 0; i < s.size(); i++) {
+    //   auto p = s[i];
+    //   auto l = p.first;
+    //   auto r = p.second;
+    //   s[i] = tp(apply_sub(new_s, l), apply_sub(new_s, r));
+    // }
+    s.insert(new_pair);
   }
 
   res_code context::unify(disagreement_set& s) {
@@ -245,9 +245,7 @@ namespace stt_res {
       }
       cout << endl;
       s.delete_identical_pairs();
-      s.delete_duplicates();
       reduce_pair_args(s);
-      s.delete_duplicates();
       if (s.is_solved()) {
 	cout << "-- FINAL SUB " << endl;
 	for (auto p : s) {
@@ -256,9 +254,7 @@ namespace stt_res {
       	return UNIFY_SUCCEEDED;
       }      
       solve_vars(s);
-      s.delete_duplicates();
       add_imitation_binding(s);
-      s.delete_duplicates();
     }
     return UNIFY_FAILED;
   }
