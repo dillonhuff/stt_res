@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "src/ast.h"
+#include "src/disagreement_set.h"
 
 using namespace std;
 
@@ -14,8 +15,6 @@ using namespace std;
 
 namespace stt_res {
 
-  typedef pair<const term*, const term*> tp;
-  typedef vector<tp> sub;
   typedef int res_code;
 
   using namespace stt_res;
@@ -25,16 +24,17 @@ namespace stt_res {
     int next_unique_num;
 
     pair<const var*, tp> pair_is_solvable(tp p);
-    bool system_is_solved(stt_res::sub& x);
-    void delete_identical_pairs(stt_res::sub& x);
-    bool pair_is_solved(const term* l, const term* r);
-    void reduce_pair_args(stt_res::sub& s);
+    pair<const var*, tp> term_solvable(const term* l, const term* r);
+    bool system_is_solved(stt_res::disagreement_set& x);
+    void delete_identical_pairs(stt_res::disagreement_set& x);
+    bool pair_is_solved(stt_res::disagreement_set& s, const term* l, const term* r);
+    void reduce_pair_args(stt_res::disagreement_set& s);
     stt_res::sub reduce_args(const term* l, const term* r);
     const term* append_lambdas(vector<const var*> vars, const term* t);
     const term* apply_args(const term* t, vector<const term*> args);
-    void solve_vars(stt_res::sub& s);
-    pair<const var*, tp> find_solvable_pair(stt_res::sub& s);
-    void add_imitation_binding(stt_res::sub& s);
+    void solve_vars(stt_res::disagreement_set& s);
+    pair<const var*, tp> find_solvable_pair(stt_res::disagreement_set& s);
+    void add_imitation_binding(stt_res::disagreement_set& s);
     const term* imitation_binding(const term* a, const term* f);
     vector<const term*> inner_imitation_binding_args(vector<const var*> ys, const term* a);
     vector<const var*> outer_imitation_binding_args(const term* f);
@@ -62,7 +62,7 @@ namespace stt_res {
 
     const term* sub(const var* target, const term* replacement, const term* t);
 
-    res_code unify(stt_res::sub& s);
+    res_code unify(stt_res::disagreement_set& s);
 
     const term* apply_sub(stt_res::sub& s, const term* t);
 
@@ -72,7 +72,9 @@ namespace stt_res {
 
   };
 
-  void erase_pair(stt_res::tp p, stt_res::sub& s);
+  void erase_pair(stt_res::tp p, stt_res::disagreement_set& s);
+
+  void delete_duplicates(stt_res::disagreement_set& s);  
 
 }
 

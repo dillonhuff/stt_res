@@ -37,7 +37,7 @@ namespace stt_res {
   }
 
   const var* context::fresh_var(string prefix, const type* t) {
-    auto n = prefix + to_string(next_unique_num);
+    auto n = "$" + prefix + to_string(next_unique_num);
     next_unique_num++;
     return mk_var(n, t);
   }
@@ -101,7 +101,7 @@ namespace stt_res {
     return imitation_binding;
   }
 
-  void context::add_imitation_binding(stt_res::sub& s) {
+  void context::add_imitation_binding(disagreement_set& s) {
     tp to_sub;
     auto sub_any = false;
     for (auto p : s) {
@@ -129,7 +129,7 @@ namespace stt_res {
     }
   }
 
-  bool context::pair_is_solved(const term* l, const term* r) {
+  bool context::pair_is_solved(disagreement_set& s, const term* l, const term* r) {
     if (l->is_var()) {
       auto vr = static_cast<const var*>(l);
       return !free_in(vr, r);
@@ -137,14 +137,36 @@ namespace stt_res {
     return false;
   }
 
-  bool context::system_is_solved(stt_res::sub& s) {
-    auto num_solved_pairs = count_if(s.begin(), s.end(), [this](tp p) {return pair_is_solved(p.first, p.second);});
-    auto num_pairs = s.size();
-    return num_solved_pairs == num_pairs;
-  }
-
-  void context::delete_identical_pairs(stt_res::sub& s) {
-    s.erase(remove_if(s.begin(), s.end(), [](tp p) {return *(p.first) == *(p.second);}), s.end());
+  bool context::system_is_solved(disagreement_set& s) {
+    for (int i = 0; i < s.size(); i++) {
+      auto pair_solved = true;
+      auto l = s[i].first;
+      auto r = s[i].second;
+      if (l->is_var() &&
+    	  !free_in(static_cast<const var*>(l), r)) {
+    	auto vr = static_cast<const var*>(l);
+    	auto doesnt_appear_elsewhere = true;
+    	for (int j = 0; j < s.size(); j++) {
+    	  if (i != j) {
+    	    if (free_in(vr, s[j].first) || free_in(vr, s[j].second)) {
+	      doesnt_appear_elsewhere = false;
+    	    }
+    	  }
+    	}
+    	if (!doesnt_appear_elsewhere) {
+    	  pair_solved = false;
+    	}
+      } else {
+    	return false;
+      }
+      if (!pair_solved) {
+    	return false;
+      }
+    }
+    return true;
+    // auto num_solved_pairs = count_if(s.begin(), s.end(), [this, &s](tp p) {return pair_is_solved(s, p.first, p.second);});
+    // auto num_pairs = s.size();
+    // return num_solved_pairs == num_pairs;
   }
 
   stt_res::sub context::reduce_args(const term* l, const term* r) {
@@ -168,25 +190,34 @@ namespace stt_res {
     return s;
   }
 
-  void context::reduce_pair_args(stt_res::sub& s) {
+  void context::reduce_pair_args(disagreement_set& s) {
     for (auto p : s) {
       auto subpairs = reduce_args(p.first, p.second);
       if (subpairs.size() > 0) {
-	erase_pair(p, s);
-	s.insert(s.end(), subpairs.begin(), subpairs.end());
+	s.erase_pair(p);
+	s.add_pairs(subpairs);
+	//s.insert(s.end(), subpairs.begin(), subpairs.end());
 	break;
       }
     }
   }
 
   pair<const var*, tp> context::pair_is_solvable(tp p) {
-    auto matched = match_lambdas(p.first, p.second);
+    auto ts = term_solvable(p.first, p.second);
+    if (ts.first != nullptr) {
+      return ts;
+    }
+    return term_solvable(p.second, p.first);
+  }
+
+  pair<const var*, tp> context::term_solvable(const term* l, const term* r) {
+    auto matched = match_lambdas(l, r);
     auto lam_vars = matched.first;
     auto ft = matched.second.first;
     auto la = split_args(ft);
     if (la.first->is_var()) {
       auto potential = static_cast<const var*>(la.first);
-      if (!free_in(potential, p.second)) {
+      if (!free_in(potential, r)) {
 	if (la.second.size() == lam_vars.size()) {
 	  auto all_vars = true;
 	  for (int i = 0; i < lam_vars.size(); i++) {
@@ -196,6 +227,9 @@ namespace stt_res {
 	      all_vars = false;
 	    }
 	  }
+	  if (all_vars) {
+	    return pair<const var*, tp>(potential, tp(l, r));
+	  }
 	}
       }
     }
@@ -203,7 +237,7 @@ namespace stt_res {
     return pair<const var*, tp>(nullptr, dummy);
   }
 
-  pair<const var*, tp> context::find_solvable_pair(stt_res::sub& s) {
+  pair<const var*, tp> context::find_solvable_pair(disagreement_set& s) {
     for (auto p : s) {
       auto res = pair_is_solvable(p);
       if (res.first != nullptr) {
@@ -215,7 +249,7 @@ namespace stt_res {
     return pair<const var*, tp>(val, to_solve);
   }
 
-  void context::solve_vars(stt_res::sub& s) {
+  void context::solve_vars(disagreement_set& s) {
     auto r = find_solvable_pair(s);
     auto val = r.first;
     auto to_solve = r.second;
@@ -224,7 +258,7 @@ namespace stt_res {
       return;
     }
 
-    erase_pair(to_solve, s);
+    s.erase_pair(to_solve);
     
     auto new_pair = tp(val, to_solve.second);
     stt_res::sub new_s{new_pair};
@@ -237,18 +271,31 @@ namespace stt_res {
     s.push_back(new_pair);
   }
 
-  res_code context::unify(stt_res::sub& s) {
+  res_code context::unify(disagreement_set& s) {
     while (true) {
       if (system_is_solved(s)) {
 	return UNIFY_SUCCEEDED;
       }
-      auto v = s;
-      delete_identical_pairs(s);
+      auto v = s.s;
+      cout << "-- CURRENT SUB " << endl;
+      for (auto p : s) {
+	cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
+      }
+      cout << endl;
+      s.delete_identical_pairs();
+      delete_duplicates(s);
       reduce_pair_args(s);
+      delete_duplicates(s);
+      if (system_is_solved(s)) {
+	return UNIFY_SUCCEEDED;
+      }      
       solve_vars(s);
+      delete_duplicates(s);
       add_imitation_binding(s);
-      if (v == s) {
-	return UNIFY_FAILED;
+      delete_duplicates(s);
+      if (v == s.s) {
+	assert(false);
+	//return UNIFY_FAILED;
       }
     }
   }
@@ -297,9 +344,17 @@ namespace stt_res {
     return *t_loc;
   }
 
-  void erase_pair(stt_res::tp p, stt_res::sub& s) {
-    s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); }), s.end());
-    s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.second) && *(r.second) == *(p.first); }), s.end());
+  void delete_duplicates(disagreement_set& s) {
+    stt_res::sub duplicates;
+    for (auto p : s) {
+      auto num_instances = count_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); });
+      if (num_instances > 1) {
+	duplicates.push_back(p);
+      }
+    }
+    for (auto p : duplicates) {
+      s.erase_pair(p);
+    }
   }
 
 }

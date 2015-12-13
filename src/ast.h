@@ -11,6 +11,9 @@
 
 namespace stt_res {
   
+  typedef pair<const term*, const term*> tp;
+  typedef vector<tp> sub;
+
   vector<const var*> free_vars(const term* t);
 
   pair<vector<const var*>, const term*> split_leading_lambdas(const term* t);
