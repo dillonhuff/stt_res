@@ -74,8 +74,6 @@ namespace stt_res {
 
   void erase_pair(stt_res::tp p, stt_res::disagreement_set& s);
 
-  void delete_duplicates(stt_res::disagreement_set& s);  
-
 }
 
 #endif

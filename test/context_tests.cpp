@@ -74,17 +74,17 @@ namespace stt_res {
     test_assertion(*r == *correct, "sub_lam");
   }
 
-  void unify_var() {
+  void already_unified() {
     context c;
     auto t = c.mk_tvar("t");
     auto x = c.mk_var("x", t);
     sub s{tp(x, x)};
     disagreement_set d(s);
     auto res = c.unify(d);
-    test_assertion(res == UNIFY_SUCCEEDED && s.size() == 0, "unify_var");
+    test_assertion(res == UNIFY_SUCCEEDED && d.size() == 0, "already_unified");
   }
 
-  void already_unified() {
+  void unify_var() {
     context c;
     auto t = c.mk_tvar("t");
     auto x = c.mk_var("x", t);
@@ -92,9 +92,10 @@ namespace stt_res {
     sub s{tp(x, y)};
     disagreement_set d(s);
     c.unify(d);
-    auto sx = c.apply_sub(s, x);
-    auto sy = c.apply_sub(s, y);
-    test_assertion(*sx == *sy, "already_unified");
+    auto final_sub = d.extract_sub();
+    auto sx = c.apply_sub(final_sub, x);
+    auto sy = c.apply_sub(final_sub, y);
+    test_assertion(*sx == *sy, "unify_var");
   }
 
   void unify_ap() {
@@ -109,8 +110,9 @@ namespace stt_res {
     sub s{tp(fx, fy)};
     disagreement_set d(s);
     c.unify(d);
-    auto sfx = c.apply_sub(s, fx);
-    auto sfy = c.apply_sub(s, fy);
+    auto final_sub = d.extract_sub();
+    auto sfx = c.apply_sub(final_sub, fx);
+    auto sfy = c.apply_sub(final_sub, fy);
     test_assertion(*sfx == *sfy, "unify_ap");
   }
 
@@ -127,8 +129,9 @@ namespace stt_res {
     sub s{tp(lf, lg)};
     disagreement_set d(s);
     c.unify(d);
-    auto slf = c.apply_sub(s, lf);
-    auto slg = c.apply_sub(s, lg);
+    auto final_sub = d.extract_sub();
+    auto slf = c.apply_sub(final_sub, lf);
+    auto slg = c.apply_sub(final_sub, lg);
     test_assertion(*slf == *slg, "unify_func_var");
   }
 
@@ -150,8 +153,9 @@ namespace stt_res {
     for (auto p : s) {
       cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
     }
-    auto sfa = c.apply_sub(s, fa);
-    auto sgx = c.apply_sub(s, gx);
+    auto final_sub = d.extract_sub();
+    auto sfa = c.apply_sub(final_sub, fa);
+    auto sgx = c.apply_sub(final_sub, gx);
     test_assertion(*sfa == *sgx, "unify_2");
   }
 
@@ -169,9 +173,10 @@ namespace stt_res {
     c.unify(d);
     for (auto p : s) {
       cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
-    }    
-    auto sfx = c.apply_sub(s, fx);
-    auto sgx = c.apply_sub(s, gx);
+    }
+    auto final_sub = d.extract_sub();
+    auto sfx = c.apply_sub(final_sub, fx);
+    auto sgx = c.apply_sub(final_sub, gx);
     test_assertion(*sfx == *sgx, "unify_funcs");
   }
 
@@ -189,8 +194,9 @@ namespace stt_res {
     sub s{tp(lfx, lgx)};
     disagreement_set d(s);
     c.unify(d);
-    auto slfx = c.apply_sub(s, lfx);
-    auto slgx = c.apply_sub(s, lgx);
+    auto final_sub = d.extract_sub();
+    auto slfx = c.apply_sub(final_sub, lfx);
+    auto slgx = c.apply_sub(final_sub, lgx);
     test_assertion(*slfx == *slgx, "unify_lam_funcs");
   }
 
@@ -212,8 +218,9 @@ namespace stt_res {
     for (auto p : s) {
       cout << *(p.first) << " / " << *(p.second) << endl;
     }
-    auto sfx = c.apply_sub(s, fxy);
-    auto sgx = c.apply_sub(s, gxy);
+    auto final_sub = d.extract_sub();
+    auto sfx = c.apply_sub(final_sub, fxy);
+    auto sgx = c.apply_sub(final_sub, gxy);
     cout << "-- sfx " << *sfx << endl;
     cout << "-- sgx " << *sgx << endl;
     test_assertion(*sfx == *sgx, "unify_funcs_multi_var");

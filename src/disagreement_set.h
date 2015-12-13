@@ -7,12 +7,18 @@ namespace stt_res {
   
   class disagreement_set {
   protected:
-
-  public:
     stt_res::sub s;
+    
+  public:
 
-    disagreement_set(stt_res::sub s) {
-      s = s;
+    stt_res::sub extract_sub() {
+      return s;
+    }
+    
+    disagreement_set(stt_res::sub sub) {
+      for (auto p : sub) {
+	push_back(p);
+      }
     }
 
     stt_res::sub::iterator begin() noexcept {
@@ -48,6 +54,21 @@ namespace stt_res {
       s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.second) && *(r.second) == *(p.first); }), s.end());
     }
 
+    void delete_duplicates() {
+      stt_res::sub duplicates;
+      for (auto p : s) {
+	auto num_instances = count_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); });
+	if (num_instances > 1) {
+	  duplicates.push_back(p);
+	}
+      }
+      for (auto p : duplicates) {
+	erase_pair(p);
+      }
+      for (auto p : duplicates) {
+	push_back(p);
+      }
+    }    
     
   };
  

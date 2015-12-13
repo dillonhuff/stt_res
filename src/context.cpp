@@ -274,29 +274,28 @@ namespace stt_res {
   res_code context::unify(disagreement_set& s) {
     while (true) {
       if (system_is_solved(s)) {
+	cout << "-- FINAL SUB " << endl;
+	for (auto p : s) {
+	  cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
+	}	
 	return UNIFY_SUCCEEDED;
-      }
-      auto v = s.s;
-      cout << "-- CURRENT SUB " << endl;
-      for (auto p : s) {
-	cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
       }
       cout << endl;
       s.delete_identical_pairs();
-      delete_duplicates(s);
+      s.delete_duplicates();
       reduce_pair_args(s);
-      delete_duplicates(s);
+      s.delete_duplicates();
       if (system_is_solved(s)) {
-	return UNIFY_SUCCEEDED;
+	cout << "-- FINAL SUB " << endl;
+	for (auto p : s) {
+	  cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
+	}
+      	return UNIFY_SUCCEEDED;
       }      
       solve_vars(s);
-      delete_duplicates(s);
+      s.delete_duplicates();
       add_imitation_binding(s);
-      delete_duplicates(s);
-      if (v == s.s) {
-	assert(false);
-	//return UNIFY_FAILED;
-      }
+      s.delete_duplicates();
     }
   }
 
@@ -342,19 +341,6 @@ namespace stt_res {
       t_loc = &new_lam;
     }
     return *t_loc;
-  }
-
-  void delete_duplicates(disagreement_set& s) {
-    stt_res::sub duplicates;
-    for (auto p : s) {
-      auto num_instances = count_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.first) && *(r.second) == *(p.second); });
-      if (num_instances > 1) {
-	duplicates.push_back(p);
-      }
-    }
-    for (auto p : duplicates) {
-      s.erase_pair(p);
-    }
   }
 
 }
