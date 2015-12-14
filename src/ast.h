@@ -104,6 +104,10 @@ namespace stt_res {
 
   pair<vector<const var*>, pair<const term*, const term*>> match_lambdas(const term* l, const term* r);
 
+  bool heads_match_imitation(const term* left_head,
+			     const term* right_head,
+			     const term* r);
+
   ostream& operator<<(ostream& stream, stt_res::sub& other);
   
 }

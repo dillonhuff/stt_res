@@ -294,7 +294,7 @@ namespace stt_res {
     auto ft = c.mk_tfunc(t, t);
     auto x = c.mk_var("x", t);
     auto F = c.mk_con("F", ft);
-    auto f = c.mk_con("f", ft);
+    auto f = c.mk_var("f", ft);
     auto lFx = c.mk_lam(x, c.mk_ap(F, x));
     auto lfx = c.mk_lam(x, c.mk_ap(f, x));
     sub s{tp(lfx, lFx)};

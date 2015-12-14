@@ -110,4 +110,20 @@ namespace stt_res {
     return stream;
   }
 
+  bool heads_match_imitation(const term* left_head,
+			     const term* right_head,
+			     const term* r) {
+    if (!left_head->is_var()) {
+      return false;
+    }
+    if (right_head->is_var()) {
+      auto right_head_var = static_cast<const var*>(right_head);
+      return free_in(right_head_var, r) && *left_head != *right_head;
+    }
+    if (right_head->is_con()) {
+      return true;
+    }
+    return false;
+  }
+
 }

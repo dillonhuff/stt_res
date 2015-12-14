@@ -119,15 +119,10 @@ namespace stt_res {
 	auto right_head_and_args = split_args(right_lam_term.second);
 	auto left_head = left_head_and_args.first;
 	auto right_head = right_head_and_args.first;
-	if (left_head->is_var() &&
-	    right_head->is_var()) {
-	  auto right_head_var = static_cast<const var*>(right_head);
-	  if (free_in(right_head_var, p.second) &&
-	      *left_head != *right_head) {
+	if (heads_match_imitation(left_head, right_head, p.second)) {
 	    sub_any = true;
 	    auto t = imitation_binding(right_head, left_head);
 	    to_sub = tp(left_head, t);
-	  }
 	}
       }
     }
