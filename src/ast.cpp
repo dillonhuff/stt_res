@@ -97,4 +97,12 @@ namespace stt_res {
     return pair<vector<const var*>, pair<const term*, const term*>>(vs, pair<const term*, const term*>(*l_loc, *r_loc));
   }
 
+  ostream& operator<<(ostream& stream, stt_res::sub& other) {
+    for (auto p : other) {
+      stream << "[ " << *(p.first) << " / " << *(p.second) << " ]" << endl;
+    }
+    stream << endl;
+    return stream;
+  }
+
 }

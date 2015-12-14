@@ -102,5 +102,8 @@ namespace stt_res {
   bool free_in(const var* v, const term* t);
 
   pair<vector<const var*>, pair<const term*, const term*>> match_lambdas(const term* l, const term* r);
+
+  ostream& operator<<(ostream& stream, stt_res::sub& other);
+  
 }
 #endif

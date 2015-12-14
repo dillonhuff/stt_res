@@ -150,9 +150,6 @@ namespace stt_res {
     sub s{tp(f, lgx), tp(fa, gx)};
     disagreement_set d(s);
     c.unify(d);
-    for (auto p : s) {
-      cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
-    }
     auto final_sub = d.extract_sub();
     auto sfa = c.apply_sub(final_sub, fa);
     auto sgx = c.apply_sub(final_sub, gx);
@@ -171,9 +168,6 @@ namespace stt_res {
     sub s{tp(fx, gx)};
     disagreement_set d(s);
     c.unify(d);
-    for (auto p : s) {
-      cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
-    }
     auto final_sub = d.extract_sub();
     auto sfx = c.apply_sub(final_sub, fx);
     auto sgx = c.apply_sub(final_sub, gx);
@@ -215,9 +209,6 @@ namespace stt_res {
     sub s{tp(fxy, gxy)};
     disagreement_set d(s);
     c.unify(d);
-    for (auto p : s) {
-      cout << *(p.first) << " / " << *(p.second) << endl;
-    }
     auto final_sub = d.extract_sub();
     auto sfx = c.apply_sub(final_sub, fxy);
     auto sgx = c.apply_sub(final_sub, gxy);

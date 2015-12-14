@@ -20,7 +20,6 @@ namespace stt_res {
       cout << "is solved" << endl;
       sub new_sub;
       for (auto p : s) {
-	cout << *(p.first) << " , " << *(p.second) << endl;
 	if (is_original_free_var(p.first)) {
 	  new_sub.push_back(p);
 	} else if (p.first->is_var() && !(p.second->is_var())) {
@@ -29,6 +28,7 @@ namespace stt_res {
 	  new_sub.push_back(tp(p.second, p.first));
 	}
       }
+      cout << new_sub;
       return new_sub;
     }
 
@@ -70,25 +70,7 @@ namespace stt_res {
     }
 
     void add_pairs(sub& subpairs) {
-      cout << "to insert " << endl;
-      for (auto p : subpairs) {
-	cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
-      }
-      for (auto p : subpairs) {
-	if (s.count(p) != 0) {
-	  cout << "ALREADY IN s" << endl;
-	  cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
-	}
-      }
-      cout << "s before add " << endl;
-      for (auto p : s) {
-	cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
-      }		      
       s.insert(subpairs.begin(), subpairs.end());
-      cout << "s after add " << endl;
-      for (auto p : s) {
-	cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
-      }		            
     }
 
     void erase_pair(stt_res::tp p) {
@@ -108,6 +90,8 @@ namespace stt_res {
     }
 
   };
+
+  ostream& operator<<(ostream& stream, disagreement_set& other);
  
 }
 

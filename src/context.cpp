@@ -165,7 +165,6 @@ namespace stt_res {
 	}		
 	s.erase_pair(p);
 	s.add_pairs(subpairs);
-	//s.insert(s.end(), subpairs.begin(), subpairs.end());
 	break;
       }
     }
@@ -243,9 +242,7 @@ namespace stt_res {
       i++;
       if (s.is_solved()) {
 	cout << "-- FINAL SUB " << endl;
-	for (auto p : s) {
-	  cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
-	}	
+	cout << s;
 	return UNIFY_SUCCEEDED;
       }
       cout << endl;
@@ -253,17 +250,13 @@ namespace stt_res {
       reduce_pair_args(s);
       if (s.is_solved()) {
 	cout << "-- FINAL SUB " << endl;
-	for (auto p : s) {
-	  cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
-	}
+	cout << s;
       	return UNIFY_SUCCEEDED;
       }      
       solve_vars(s);
       add_imitation_binding(s);
       cout << "s.size() == " << s.size() << endl;
-      for (auto p : s) {
-	cout << "-- " << *(p.first) << " / " << *(p.second) << endl;
-      }      
+      cout << s;
     }
     cout << "COULD NOT UNIFY" << endl;
     assert(false);
@@ -294,7 +287,6 @@ namespace stt_res {
   const term* context::apply_sub(stt_res::sub& s, const term* t) {
     auto t_loc = &t;
     for (auto p : s) {
-      cout << *(p.first) << " , " << *(p.second) << endl;
       assert(p.first->is_var());
       auto v = static_cast<const var*>(p.first);
       auto e = p.second;
