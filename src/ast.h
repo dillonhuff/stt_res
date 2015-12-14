@@ -16,10 +16,12 @@ namespace stt_res {
 
   struct term_comparator {
     bool operator()(const term* l, const term* r) const {
-      if (l->is_ap() && r->is_var()) {
+      if ((l->is_ap() && r->is_var()) ||
+	  (l->is_lam() && r->is_ap())) {
 	return false;
       }
-      if (l->is_var() && r->is_ap()) {
+      if ((l->is_var() && r->is_ap()) ||
+	  (l->is_ap() && r->is_lam())) {
 	return true;
       }
       if (l->is_var() && r->is_var()) {

@@ -36,11 +36,11 @@ namespace stt_res {
 
 
   bool disagreement_set::pair_is_solved(const term* l, const term* r) {
-      if (l->is_var()) {
-	auto vr = static_cast<const var*>(l);
-	return !free_in(vr, r);
-      }
-      return false;
+    if (l->is_var()) {
+      auto vr = static_cast<const var*>(l);
+      return !free_in(vr, r);
     }
-  
+    return false;
+  }
+
 }

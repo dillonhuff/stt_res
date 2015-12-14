@@ -228,6 +228,9 @@ namespace stt_res {
     
     auto new_pair = tp(val, to_solve.second);
     stt_res::sub new_s{new_pair};
+    auto action = [this, &new_s](tp p) { return tp(apply_sub(new_s, p.first), apply_sub(new_s, p.second)); };
+    s.apply(action);
+    s.insert(new_pair);
     // TODO: Replace with c++ equivalent of set map
     // for (int i = 0; i < s.size(); i++) {
     //   auto p = s[i];
@@ -235,7 +238,6 @@ namespace stt_res {
     //   auto r = p.second;
     //   s[i] = tp(apply_sub(new_s, l), apply_sub(new_s, r));
     // }
-    s.insert(new_pair);
   }
 
   res_code context::unify(disagreement_set& s) {

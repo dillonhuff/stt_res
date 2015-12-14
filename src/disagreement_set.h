@@ -12,6 +12,7 @@ namespace stt_res {
   class disagreement_set {
   protected:
     dset s;
+    vector<const var*> original_free_vars;
     
   public:
     sub extract_sub() {
@@ -20,9 +21,23 @@ namespace stt_res {
       sub new_sub;
       for (auto p : s) {
 	cout << *(p.first) << " , " << *(p.second) << endl;
-	new_sub.push_back(p);
+	if (is_original_free_var(p.first)) {
+	  new_sub.push_back(p);
+	} else {
+	  new_sub.push_back(tp(p.second, p.first));
+	}
       }
       return new_sub;
+    }
+
+    bool is_original_free_var(const term* t) {
+      if (!(t->is_var())) {
+	return false;
+      }
+      auto t_var = static_cast<const var*>(t);
+      return count_if(original_free_vars.begin(),
+		      original_free_vars.end(),
+		      [this, t_var](const var* v) {return *v == *t_var;}) > 0;
     }
 
     disagreement_set() {}
@@ -30,6 +45,14 @@ namespace stt_res {
     disagreement_set(sub sub) {
       for (auto p : sub) {
 	insert(p);
+	auto l_fvs = free_vars(p.first);
+	auto r_fvs = free_vars(p.second);
+	original_free_vars.insert(original_free_vars.end(),
+				  l_fvs.begin(),
+				  l_fvs.end());
+	original_free_vars.insert(original_free_vars.end(),
+				  r_fvs.begin(),
+				  r_fvs.end());
       }
     }
 
@@ -76,6 +99,13 @@ namespace stt_res {
 
     bool pair_is_solved(const term* l, const term* r);
     bool is_solved();
+
+    template<class UnaryOperation>
+      void apply(UnaryOperation unary_op) {
+      dset new_set;
+      transform(begin(), end(), inserter(new_set, new_set.begin()), unary_op);
+      s = new_set;
+    }
 
   };
  
