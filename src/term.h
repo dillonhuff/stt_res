@@ -17,6 +17,10 @@ namespace stt_res {
 
     const type* t;
 
+    virtual bool is_con() const {
+      return false;
+    }
+
     virtual bool is_lam() const {
       return false;
     }

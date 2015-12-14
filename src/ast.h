@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "src/ap.h"
+#include "src/con.h"
 #include "src/lam.h"
 #include "src/tfunc.h"
 #include "src/tvar.h"

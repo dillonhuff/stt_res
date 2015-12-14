@@ -33,6 +33,10 @@ namespace stt_res {
 	}
       }
     }
+
+    if (t->is_con()) {
+      return t;
+    }
     assert(false);
   }
 
@@ -280,6 +284,9 @@ namespace stt_res {
 	return sub(br_l_lam->v, br_r, br_l_lam->e);
       }
       return mk_ap(br_l, br_r);
+    }
+    if (t->is_con()) {
+      return t;
     }
     assert(false);
   }

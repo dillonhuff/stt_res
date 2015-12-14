@@ -26,6 +26,11 @@ namespace stt_res {
       return efvs;
     }
 
+    if (t->is_con()) {
+      vector<const var*> fvs{};
+      return fvs;
+    }
+
     assert(false);
   }
 

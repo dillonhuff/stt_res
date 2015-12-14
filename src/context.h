@@ -49,8 +49,9 @@ namespace stt_res {
       auto v = new tvar(name);
       return v;
     }
-    
+
     const type* mk_tfunc(const type* l, const type* r) { return new tfunc(l, r); }
+    const con* mk_con(string name, const type* t) { return new con(name, t); }
     const var* mk_var(string name, const type* t) {
       auto v = new var(name, t);
       return v;

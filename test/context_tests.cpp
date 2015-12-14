@@ -217,6 +217,95 @@ namespace stt_res {
     test_assertion(*sfx == *sgx, "unify_funcs_multi_var");
   }
 
+  void unify_func_const() {
+    context c;
+    auto t = c.mk_tvar("t");
+    auto ft = c.mk_tfunc(t, t);
+    auto x = c.mk_var("x", t);
+    auto f = c.mk_var("f", ft);
+    auto F = c.mk_con("F", ft);
+    auto fFx = c.mk_ap(f, c.mk_ap(F, x));
+    auto Ffx = c.mk_ap(F, c.mk_ap(f, x));
+    cout << *fFx << endl;
+    cout << *Ffx << endl;
+    sub s{tp(fFx, Ffx)};
+    disagreement_set d(s);
+    c.unify(d);
+    auto final_sub = d.extract_sub();
+    auto sFfx = c.apply_sub(final_sub, Ffx);
+    auto sfFx = c.apply_sub(final_sub, fFx);
+    test_assertion(*sFfx == *sfFx, "unify_func_const");
+  }
+
+  void unify_fx_Fx() {
+    context c;
+    auto t = c.mk_tvar("t");
+    auto ft = c.mk_tfunc(t, t);
+    auto x = c.mk_var("x", t);
+    auto f = c.mk_var("f", ft);
+    auto F = c.mk_con("F", ft);
+    auto fx = c.mk_ap(f, x);
+    auto Fx = c.mk_ap(F, x);
+    sub s{tp(fx, Fx)};
+    disagreement_set d(s);
+    c.unify(d);
+    auto final_sub = d.extract_sub();
+    auto sFx = c.apply_sub(final_sub, Fx);
+    auto sfx = c.apply_sub(final_sub, fx);
+    test_assertion(*sFx == *sfx, "unify_fx_Fx");
+  }
+
+  void unify_Fx_Fx() {
+    context c;
+    auto t = c.mk_tvar("t");
+    auto ft = c.mk_tfunc(t, t);
+    auto x = c.mk_var("x", t);
+    auto F = c.mk_con("F", ft);
+    auto Fx = c.mk_ap(F, x);
+    sub s{tp(Fx, Fx)};
+    disagreement_set d(s);
+    c.unify(d);
+    auto final_sub = d.extract_sub();
+    auto sFx = c.apply_sub(final_sub, Fx);
+    test_assertion(*sFx == *sFx, "unify_Fx_Fx");
+  }
+
+  void unify_Fx_Fy() {
+    context c;
+    auto t = c.mk_tvar("t");
+    auto ft = c.mk_tfunc(t, t);
+    auto x = c.mk_var("x", t);
+    auto y = c.mk_var("y", t);
+    auto F = c.mk_con("F", ft);
+    auto Fx = c.mk_ap(F, x);
+    auto Fy = c.mk_ap(F, y);
+    sub s{tp(Fx, Fy)};
+    disagreement_set d(s);
+    c.unify(d);
+    auto final_sub = d.extract_sub();
+    auto sFx = c.apply_sub(final_sub, Fx);
+    auto sFy = c.apply_sub(final_sub, Fy);
+    test_assertion(*sFx == *sFy, "unify_Fx_Fy");
+  }
+
+  void unify_lFx_lfx() {
+    context c;
+    auto t = c.mk_tvar("t");
+    auto ft = c.mk_tfunc(t, t);
+    auto x = c.mk_var("x", t);
+    auto F = c.mk_con("F", ft);
+    auto f = c.mk_con("f", ft);
+    auto lFx = c.mk_lam(x, c.mk_ap(F, x));
+    auto lfx = c.mk_lam(x, c.mk_ap(f, x));
+    sub s{tp(lfx, lFx)};
+    disagreement_set d(s);
+    c.unify(d);
+    auto final_sub = d.extract_sub();
+    auto slFx = c.apply_sub(final_sub, lFx);
+    auto slfx = c.apply_sub(final_sub, lfx);
+    test_assertion(*slFx == *slfx, "unify_lFx_lfx");
+  }  
+  
   void all_context_tests() {
     make_var();
     dont_sub_var();
@@ -232,6 +321,11 @@ namespace stt_res {
     unify_funcs();
     unify_lam_funcs();
     unify_funcs_multi_var();
+    unify_Fx_Fx();
+    unify_Fx_Fy();
+    unify_lFx_lfx();
+    unify_fx_Fx();
+    unify_func_const();
   }
 
 }
