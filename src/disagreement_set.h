@@ -23,6 +23,8 @@ namespace stt_res {
 	cout << *(p.first) << " , " << *(p.second) << endl;
 	if (is_original_free_var(p.first)) {
 	  new_sub.push_back(p);
+	} else if (p.first->is_var() && !(p.second->is_var())) {
+	  new_sub.push_back(p);
 	} else {
 	  new_sub.push_back(tp(p.second, p.first));
 	}
@@ -93,8 +95,6 @@ namespace stt_res {
       dset new_set;
       copy_if(s.begin(), s.end(), inserter(new_set, new_set.end()), [p](tp r) { return not (*(r.first) == *(p.first) && *(r.second) == *(p.second)); });
       s = new_set;
-      //      s.erase(remove_if(s.begin(), s.end(), 
-      //      s.erase(remove_if(s.begin(), s.end(), [p](tp r) { return *(r.first) == *(p.second) && *(r.second) == *(p.first); }), s.end());
     }
 
     bool pair_is_solved(const term* l, const term* r);

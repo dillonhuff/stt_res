@@ -66,6 +66,9 @@ namespace stt_res {
 						   const type* t) {
     auto tps = t->arg_types();
     vector<const term*> all_args;
+    for (auto y : ys) {
+      all_args.push_back(y);
+    }
     vector<const var*> zs;
     for (auto tp : tps) {
       auto v = fresh_var("z", tp);
@@ -231,13 +234,6 @@ namespace stt_res {
     auto action = [this, &new_s](tp p) { return tp(apply_sub(new_s, p.first), apply_sub(new_s, p.second)); };
     s.apply(action);
     s.insert(new_pair);
-    // TODO: Replace with c++ equivalent of set map
-    // for (int i = 0; i < s.size(); i++) {
-    //   auto p = s[i];
-    //   auto l = p.first;
-    //   auto r = p.second;
-    //   s[i] = tp(apply_sub(new_s, l), apply_sub(new_s, r));
-    // }
   }
 
   res_code context::unify(disagreement_set& s) {
@@ -298,6 +294,7 @@ namespace stt_res {
   const term* context::apply_sub(stt_res::sub& s, const term* t) {
     auto t_loc = &t;
     for (auto p : s) {
+      cout << *(p.first) << " , " << *(p.second) << endl;
       assert(p.first->is_var());
       auto v = static_cast<const var*>(p.first);
       auto e = p.second;
