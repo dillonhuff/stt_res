@@ -1,3 +1,4 @@
 *~
 all-tests
 *.o
+all-tests.dSYM/
