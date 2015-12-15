@@ -17,11 +17,10 @@ namespace stt_res {
     const var* v;
     const term* e;
 
-    lam(const var* vp, const term* ep) {
+    lam(const var* vp, const term* ep, const type* tp) {
       v = vp;
       e = ep;
-      // TODO REPLACE THIS IN context.mk_lam
-      t = new tfunc(v->t, e->t);
+      t = tp;
     }
 
     virtual bool is_lam() const override {

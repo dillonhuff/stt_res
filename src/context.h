@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "src/arena_allocator.h"
 #include "src/ast.h"
 #include "src/disagreement_set.h"
 
@@ -39,8 +40,9 @@ namespace stt_res {
     vector<const term*> inner_imitation_binding_args(vector<const var*> ys, const term* a);
     vector<const var*> outer_imitation_binding_args(const term* f);
     const term* inner_imitation_binding_arg(vector<const var*> ys, const type* t);
-    
-    
+
+    arena_allocator allocator;
+
   public:
     void reduce_pair_args(stt_res::disagreement_set& s);    
     void delete_identical_pairs(stt_res::disagreement_set& x);
@@ -53,18 +55,34 @@ namespace stt_res {
     }
     
     const type* mk_tvar(string name) {
-      auto v = new tvar(name);
-      return v;
+      auto ptr = static_cast<tvar*>(allocator.allocate(sizeof(tvar)));
+      return new (ptr) tvar(name);
     }
 
-    const type* mk_tfunc(const type* l, const type* r) { return new tfunc(l, r); }
-    const con* mk_con(string name, const type* t) { return new con(name, t); }
-    const var* mk_var(string name, const type* t) {
-      auto v = new var(name, t);
-      return v;
+    const type* mk_tfunc(const type* l, const type* r) {
+      auto ptr = static_cast<tfunc*>(allocator.allocate(sizeof(tfunc)));
+      return new (ptr) tfunc(l, r);
     }
-    const ap* mk_ap(const term* l, const term* r) { return new ap(l, r); }
-    const lam* mk_lam(const var* v, const term* e) { return new lam(v, e); }
+    
+    const con* mk_con(string name, const type* t) {
+      auto ptr = static_cast<con*>(allocator.allocate(sizeof(con)));
+      return new (ptr) con(name, t);
+    }
+    
+    const var* mk_var(string name, const type* t) {
+      auto ptr = static_cast<var*>(allocator.allocate(sizeof(var)));
+      return new (ptr) var(name, t);
+    }
+    
+    const ap* mk_ap(const term* l, const term* r) {
+      auto ptr = static_cast<ap*>(allocator.allocate(sizeof(ap)));
+      return new (ptr) ap(l, r);
+    }
+    const lam* mk_lam(const var* v, const term* e) {
+      auto t = mk_tfunc(v->t, e->t);
+      auto ptr = static_cast<lam*>(allocator.allocate(sizeof(lam)));
+      return new (ptr) lam(v, e, t);
+    }
 
     const term* sub(const var* target, const term* replacement, const term* t);
 
