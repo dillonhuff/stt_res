@@ -40,6 +40,10 @@ namespace stt_res {
       t.push_back(in);
       return t;
     }
+
+    virtual int arity() const override {
+      return 1 + out->arity();
+    }
   
   };
 

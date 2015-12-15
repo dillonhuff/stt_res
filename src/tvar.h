@@ -33,6 +33,10 @@ namespace stt_res {
       vector<const type*> v{};
       return v;
     }
+
+    virtual int arity() const override {
+      return 0;
+    }
   };
 
 }

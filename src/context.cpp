@@ -108,7 +108,7 @@ namespace stt_res {
     return imitation_binding;
   }
 
-  void context::add_imitation_binding(disagreement_set& s) {
+  bool context::add_imitation_binding(disagreement_set& s) {
     tp to_sub;
     auto sub_any = false;
     for (auto p : s) {
@@ -128,7 +128,46 @@ namespace stt_res {
     }
     if (sub_any) {
       s.insert(to_sub);
+      return true;
     }
+    return false;
+  }
+
+  vector<const term*> context::projection_bindings(const term* t) {
+    assert(t->t->arity() > 0);
+    auto ys = outer_imitation_binding_args(t);
+    vector<const term*> projection_bindings;
+    for (auto y : ys) {
+      auto inner_args = inner_imitation_binding_args(ys, y);
+      auto pb = append_lambdas(ys, apply_args(y, inner_args));
+      projection_bindings.push_back(pb);
+    }
+    return projection_bindings;
+  }
+
+  // TODO: Currently this function only ever adds the 1st
+  // imitation binding. Will need a more sophisticated search strategy
+  // to accomodate all bindings
+  void context::add_projection_binding(stt_res::disagreement_set& s) {
+    tp to_sub;
+    auto sub_any = false;
+    for (auto p : s) {
+      auto left_lam_term = split_leading_lambdas(p.first);
+      auto right_lam_term = split_leading_lambdas(p.second);
+      if (vars_equal(left_lam_term.first, right_lam_term.first)) {
+	auto left_head_and_args = split_args(left_lam_term.second);
+	auto right_head_and_args = split_args(right_lam_term.second);
+	auto left_head = left_head_and_args.first;
+	if (left_head->t->arity() > 0) {
+	    sub_any = true;
+	    auto ps = projection_bindings(left_head);
+	    to_sub = tp(left_head, ps[0]);
+	}
+      }
+    }
+    if (sub_any) {
+      s.insert(to_sub);
+    }    
   }
 
   stt_res::sub context::reduce_args(const term* l, const term* r) {
@@ -253,7 +292,9 @@ namespace stt_res {
       	return UNIFY_SUCCEEDED;
       }      
       solve_vars(s);
-      add_imitation_binding(s);
+      if (!add_imitation_binding(s)) {
+	add_projection_binding(s);
+      }
       cout << "s.size() == " << s.size() << endl;
       cout << s;
     }

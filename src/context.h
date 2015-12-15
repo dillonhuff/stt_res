@@ -32,7 +32,9 @@ namespace stt_res {
     const term* apply_args(const term* t, vector<const term*> args);
     void solve_vars(stt_res::disagreement_set& s);
     pair<const var*, tp> find_solvable_pair(stt_res::disagreement_set& s);
-    void add_imitation_binding(stt_res::disagreement_set& s);
+    bool add_imitation_binding(stt_res::disagreement_set& s);
+    vector<const term*> projection_bindings(const term* t);
+    void add_projection_binding(stt_res::disagreement_set& s);
     const term* imitation_binding(const term* a, const term* f);
     vector<const term*> inner_imitation_binding_args(vector<const var*> ys, const term* a);
     vector<const var*> outer_imitation_binding_args(const term* f);

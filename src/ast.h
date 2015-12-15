@@ -18,11 +18,18 @@ namespace stt_res {
   struct term_comparator {
     bool operator()(const term* l, const term* r) const {
       if ((l->is_ap() && r->is_var()) ||
-	  (l->is_lam() && r->is_ap())) {
+	  (l->is_lam() && r->is_ap()) ||
+	  (l->is_lam() && r->is_var()) ||
+	  (l->is_con() && r->is_ap()) ||
+	  (l->is_ap() && r->is_con()) ||
+	  (l->is_var() && r->is_con())) {
 	return false;
       }
       if ((l->is_var() && r->is_ap()) ||
-	  (l->is_ap() && r->is_lam())) {
+	  (l->is_ap() && r->is_lam()) ||
+	  (l->is_var() && r->is_lam()) ||
+	  (l->is_con() && r->is_ap()) ||
+	  (l->is_con() && r->is_var())) {
 	return true;
       }
       if (l->is_var() && r->is_var()) {
