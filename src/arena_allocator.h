@@ -13,8 +13,8 @@ namespace stt_res {
   protected:
     char* start;
     char* current;
-    int size;
-    int space_left;
+    size_t size;
+    size_t space_left;
     
   public:
     arena_allocator() {
