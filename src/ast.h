@@ -20,7 +20,6 @@ namespace stt_res {
       if ((l->is_ap() && r->is_var()) ||
 	  (l->is_lam() && r->is_ap()) ||
 	  (l->is_lam() && r->is_var()) ||
-	  (l->is_con() && r->is_ap()) ||
 	  (l->is_ap() && r->is_con()) ||
 	  (l->is_var() && r->is_con())) {
 	return false;

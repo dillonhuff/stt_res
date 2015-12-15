@@ -148,7 +148,7 @@ namespace stt_res {
   // TODO: Currently this function only ever adds the 1st
   // imitation binding. Will need a more sophisticated search strategy
   // to accomodate all bindings
-  void context::add_projection_binding(stt_res::disagreement_set& s) {
+  bool context::add_projection_binding(stt_res::disagreement_set& s) {
     tp to_sub;
     auto sub_any = false;
     for (auto p : s) {
@@ -158,7 +158,7 @@ namespace stt_res {
 	auto left_head_and_args = split_args(left_lam_term.second);
 	auto right_head_and_args = split_args(right_lam_term.second);
 	auto left_head = left_head_and_args.first;
-	if (left_head->t->arity() > 0) {
+	if (left_head->is_var() && left_head->t->arity() > 0) {
 	    sub_any = true;
 	    auto ps = projection_bindings(left_head);
 	    to_sub = tp(left_head, ps[0]);
@@ -166,8 +166,12 @@ namespace stt_res {
       }
     }
     if (sub_any) {
+      cout << "proj binding is " << endl;
+      cout << *(to_sub.first) << " , " << *(to_sub.second) << endl;
       s.insert(to_sub);
-    }    
+      return true;
+    }
+    return false;
   }
 
   stt_res::sub context::reduce_args(const term* l, const term* r) {
@@ -293,7 +297,10 @@ namespace stt_res {
       }      
       solve_vars(s);
       if (!add_imitation_binding(s)) {
-	add_projection_binding(s);
+	cout << "-- TRYING TO ADD PROJECTION BINDINGS" << endl;
+	if (add_projection_binding(s)) {
+	  cout << "-- ADDED PROJECTION BINDINGS" << endl;
+	}
       }
       cout << "s.size() == " << s.size() << endl;
       cout << s;

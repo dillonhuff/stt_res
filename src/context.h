@@ -25,16 +25,16 @@ namespace stt_res {
 
     pair<const var*, tp> pair_is_solvable(tp p);
     pair<const var*, tp> term_solvable(const term* l, const term* r);
-    void delete_identical_pairs(stt_res::disagreement_set& x);
-    void reduce_pair_args(stt_res::disagreement_set& s);
+    
+
     stt_res::sub reduce_args(const term* l, const term* r);
     const term* append_lambdas(vector<const var*> vars, const term* t);
     const term* apply_args(const term* t, vector<const term*> args);
-    void solve_vars(stt_res::disagreement_set& s);
+    
     pair<const var*, tp> find_solvable_pair(stt_res::disagreement_set& s);
-    bool add_imitation_binding(stt_res::disagreement_set& s);
+    
     vector<const term*> projection_bindings(const term* t);
-    void add_projection_binding(stt_res::disagreement_set& s);
+
     const term* imitation_binding(const term* a, const term* f);
     vector<const term*> inner_imitation_binding_args(vector<const var*> ys, const term* a);
     vector<const var*> outer_imitation_binding_args(const term* f);
@@ -42,7 +42,12 @@ namespace stt_res {
     
     
   public:
-
+    void reduce_pair_args(stt_res::disagreement_set& s);    
+    void delete_identical_pairs(stt_res::disagreement_set& x);
+    void solve_vars(stt_res::disagreement_set& s);
+    bool add_projection_binding(stt_res::disagreement_set& s);
+    bool add_imitation_binding(stt_res::disagreement_set& s);
+    
     context() {
       next_unique_num = 0;
     }
