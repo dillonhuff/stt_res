@@ -6,8 +6,10 @@
 #include <vector>
 
 #include "src/arena_allocator.h"
+#include "src/assumption.h"
 #include "src/ast.h"
 #include "src/disagreement_set.h"
+#include "src/proof.h"
 
 using namespace std;
 
@@ -40,6 +42,7 @@ namespace stt_res {
     const term* inner_imitation_binding_arg(vector<const var*> ys, const type* t);
 
     arena_allocator allocator;
+    const tvar* boolean;
 
   public:
     void reduce_pair_args(stt_res::disagreement_set& s);    
@@ -50,9 +53,23 @@ namespace stt_res {
     
     context() {
       next_unique_num = 0;
+      boolean = mk_tvar("b");
+    }
+
+    const tvar* b() { return boolean; }
+
+    const term* mk_not(const term* t) {
+      auto ptr = static_cast<con*>(allocator.allocate(sizeof(con)));
+      auto nf = mk_tfunc(b(), b());
+      return new (ptr) con("~", nf);
+    }
+
+    proof* mk_assumption(const term* t) {
+      auto ptr = static_cast<assumption*>(allocator.allocate(sizeof(assumption)));
+      return new (ptr) assumption(t);
     }
     
-    const type* mk_tvar(string name) {
+    const tvar* mk_tvar(string name) {
       auto ptr = static_cast<tvar*>(allocator.allocate(sizeof(tvar)));
       return new (ptr) tvar(name);
     }
