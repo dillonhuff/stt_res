@@ -281,6 +281,9 @@ namespace stt_res {
   bool context::unify_dfs(disagreement_set& s, int depth) {
     s.delete_identical_pairs();
     solve_vars(s);
+    s.delete_identical_pairs();
+    reduce_pair_args(s);
+    s.delete_identical_pairs();
     if (s.is_solved()) {
       return true;
     }
@@ -289,14 +292,7 @@ namespace stt_res {
     }
     auto before_delete = s;
     auto current = before_delete;
-    current = before_delete;
-    reduce_pair_args(current);
-    auto res = unify_dfs(current, depth - 1);
-    if (res) {
-      s = current;
-      return res;
-    }
-    current = before_delete;
+    auto res = false;
     if (add_imitation_binding(current)) {
       res = unify_dfs(current, depth - 1);
       if (res) {
@@ -312,48 +308,12 @@ namespace stt_res {
     	return res;
       }
     }
-    // cout << "Unsolved s" << endl;
-    // cout << s;
-    // cout << "Trying solve_vars on s" << endl;
-    // solve_vars(s);
-    // cout << s;
-    //assert(false);
     return false;
   }
 
   bool context::unify(disagreement_set& s) {
     int depth = 6;
     return unify_dfs(s, depth);
-    // int max = 10;
-    // int i = 0;
-    // while (i < max) {
-    //   i++;
-    //   if (s.is_solved()) {
-    // 	cout << "-- FINAL SUB " << endl;
-    // 	cout << s;
-    // 	return UNIFY_SUCCEEDED;
-    //   }
-    //   cout << endl;
-    //   s.delete_identical_pairs();
-    //   reduce_pair_args(s);
-    //   if (s.is_solved()) {
-    // 	cout << "-- FINAL SUB " << endl;
-    // 	cout << s;
-    //   	return UNIFY_SUCCEEDED;
-    //   }      
-    //   solve_vars(s);
-    //   if (!add_imitation_binding(s)) {
-    // 	cout << "-- TRYING TO ADD PROJECTION BINDINGS" << endl;
-    // 	// if (add_projection_binding(s)) {
-    // 	//   cout << "-- ADDED PROJECTION BINDINGS" << endl;
-    // 	// }
-    //   }
-    //   cout << "s.size() == " << s.size() << endl;
-    //   cout << s;
-    // }
-    // cout << "COULD NOT UNIFY" << endl;
-    // assert(false);
-    // return UNIFY_FAILED;
   }
 
   const term* context::beta_reduce(const term* t) {
