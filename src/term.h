@@ -17,6 +17,11 @@ namespace stt_res {
 
     const type* t;
 
+    virtual vector<const term*> terms()  const {
+      auto ts{this};
+      return ts;
+    }
+
     virtual bool is_con() const {
       return false;
     }

@@ -10,6 +10,7 @@
 #include "src/ast.h"
 #include "src/disagreement_set.h"
 #include "src/proof.h"
+#include "src/res.h"
 
 using namespace std;
 
@@ -61,12 +62,18 @@ namespace stt_res {
     const term* mk_not(const term* t) {
       auto ptr = static_cast<con*>(allocator.allocate(sizeof(con)));
       auto nf = mk_tfunc(b(), b());
-      return new (ptr) con("~", nf);
+      auto neg = new (ptr) con("~", nf);
+      return mk_ap(neg, t);
     }
 
     proof* mk_assumption(const term* t) {
       auto ptr = static_cast<assumption*>(allocator.allocate(sizeof(assumption)));
       return new (ptr) assumption(t);
+    }
+
+    proof* mk_res(stt_res::sub& theta, proof* l, proof* r, const term* t) {
+      auto ptr = static_cast<res*>(allocator.allocate(sizeof(res)));
+      return new (ptr) res(theta, l, r, t);
     }
     
     const tvar* mk_tvar(string name) {
@@ -88,15 +95,34 @@ namespace stt_res {
       auto ptr = static_cast<var*>(allocator.allocate(sizeof(var)));
       return new (ptr) var(name, t);
     }
-    
+
     const ap* mk_ap(const term* l, const term* r) {
       auto ptr = static_cast<ap*>(allocator.allocate(sizeof(ap)));
       return new (ptr) ap(l, r);
     }
+    
     const lam* mk_lam(const var* v, const term* e) {
       auto t = mk_tfunc(v->t, e->t);
       auto ptr = static_cast<lam*>(allocator.allocate(sizeof(lam)));
       return new (ptr) lam(v, e, t);
+    }
+
+    const term* mk_or(const term* l, const term* r) {
+      auto ptr = static_cast<con*>(allocator.allocate(sizeof(con)));
+      auto nf = mk_tfunc(b(), mk_tfunc(b(), b()));
+      auto o = new (ptr) con("or", nf);
+      return mk_ap(mk_ap(o, l), r);
+    }
+
+    const term* mk_clause(vector<const term*> ts) {
+      assert(ts.size() > 0);
+      auto t = ts.back();
+      if (ts.size() > 1) {
+	ts.pop_back();
+	auto res = mk_clause(ts);
+	return mk_or(t, res);
+      }
+      return t;
     }
 
     const term* sub(const var* target, const term* replacement, const term* t);

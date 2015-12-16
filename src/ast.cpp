@@ -126,4 +126,26 @@ namespace stt_res {
     return false;
   }
 
+  const term* destruct_neg(const term* t) {
+    assert(is_neg(t));
+    auto t_f = static_cast<const ap*>(t);
+    return t_f->r;
+  }
+
+  bool is_con_named(const term* t, string n) {
+    if (t->is_con()) {
+      auto t_con = static_cast<const con*>(t);
+      return t_con->name == n;
+    }
+    return false;
+  }
+
+  bool is_neg(const term* t) {
+    if (t->is_ap()) {
+      auto t_ap = static_cast<const ap*>(t);
+      return is_con_named(t_ap->l, "~");
+    }
+    return false;
+  }
+
 }

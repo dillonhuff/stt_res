@@ -22,6 +22,8 @@ namespace stt_res {
     auto not_a = c.mk_not(a);
     auto a_p = c.mk_assumption(a);
     auto not_a_p = c.mk_assumption(not_a);
+    cout << *a << endl;
+    cout << *not_a << endl;
     vector<proof*> clauses{a_p, not_a_p};
     auto p = resolve(c, clauses);
     test_assertion(p != nullptr, "resolve_a_not_a");

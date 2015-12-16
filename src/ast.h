@@ -119,6 +119,10 @@ namespace stt_res {
 			     const term* right_head,
 			     const term* r);
 
+  bool is_neg(const term* t);
+
+  const term* destruct_neg(const term* t);
+  
   ostream& operator<<(ostream& stream, stt_res::sub& other);
   
 }
