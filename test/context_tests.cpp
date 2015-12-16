@@ -325,7 +325,7 @@ namespace stt_res {
     unify_Fx_Fy();
     unify_lFx_lfx();
     unify_fx_Fx();
-    //unify_func_const();
+    unify_func_const();
   }
 
 }

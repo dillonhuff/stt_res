@@ -31,6 +31,11 @@ namespace stt_res {
 	  (l->is_con() && r->is_var())) {
 	return true;
       }
+      if (l->is_con() && r->is_con()) {
+  	auto l_con = static_cast<const con*>(l);
+  	auto r_con = static_cast<const con*>(r);
+  	return l_con->name < r_con->name;
+      }      
       if (l->is_var() && r->is_var()) {
   	auto l_var = static_cast<const var*>(l);
   	auto r_var = static_cast<const var*>(r);

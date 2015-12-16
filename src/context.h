@@ -44,7 +44,7 @@ namespace stt_res {
   public:
     void reduce_pair_args(stt_res::disagreement_set& s);    
     void delete_identical_pairs(stt_res::disagreement_set& x);
-    void solve_vars(stt_res::disagreement_set& s);
+    bool solve_vars(stt_res::disagreement_set& s);
     bool add_projection_binding(stt_res::disagreement_set& s);
     bool add_imitation_binding(stt_res::disagreement_set& s);
     

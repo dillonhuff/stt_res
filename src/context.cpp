@@ -259,13 +259,13 @@ namespace stt_res {
     return pair<const var*, tp>(val, to_solve);
   }
 
-  void context::solve_vars(disagreement_set& s) {
+  bool context::solve_vars(disagreement_set& s) {
     auto r = find_solvable_pair(s);
     auto val = r.first;
     auto to_solve = r.second;
     
     if (val == nullptr) {
-      return;
+      return false;
     }
 
     s.erase_pair(to_solve);
@@ -275,6 +275,7 @@ namespace stt_res {
     auto action = [this, &new_s](tp p) { return tp(apply_sub(new_s, p.first), apply_sub(new_s, p.second)); };
     s.apply(action);
     s.insert(new_pair);
+    return true;
   }
 
   bool context::unify_dfs(disagreement_set& s, int depth) {
@@ -288,32 +289,28 @@ namespace stt_res {
     }
     auto before_delete = s;
     auto current = before_delete;
-    current.delete_identical_pairs();
+    current = before_delete;
+    reduce_pair_args(current);
     auto res = unify_dfs(current, depth - 1);
     if (res) {
       s = current;
       return res;
     }
     current = before_delete;
-    reduce_pair_args(current);
-    res = unify_dfs(current, depth - 1);
-    if (res) {
-      s = current;
-      return res;
+    if (add_imitation_binding(current)) {
+      res = unify_dfs(current, depth - 1);
+      if (res) {
+	s = current;
+	return res;
+      }
     }
     current = before_delete;
-    solve_vars(current);
-    res = unify_dfs(current, depth - 1);
-    if (res) {
-      s = current;
-      return res;
-    }
-    current = before_delete;
-    add_imitation_binding(current);
-    res = unify_dfs(current, depth - 1);
-    if (res) {
-      s = current;
-      return res;
+    if (add_projection_binding(current)) {
+      res = unify_dfs(current, depth - 1);
+      if (res) {
+    	s = current;
+    	return res;
+      }
     }
     // cout << "Unsolved s" << endl;
     // cout << s;
@@ -321,7 +318,7 @@ namespace stt_res {
     // solve_vars(s);
     // cout << s;
     //assert(false);
-    return res;
+    return false;
   }
 
   bool context::unify(disagreement_set& s) {
