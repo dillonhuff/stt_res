@@ -20,7 +20,7 @@ namespace stt_res {
     arena_allocator() {
       size = DEFAULT_ARENA_SIZE;
       space_left = size;
-      start = (char*) malloc(size);
+      start = static_cast<char*>(malloc(size));
       current = start;
     }
 

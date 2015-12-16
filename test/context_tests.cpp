@@ -81,7 +81,7 @@ namespace stt_res {
     sub s{tp(x, x)};
     disagreement_set d(s);
     auto res = c.unify(d);
-    test_assertion(res == UNIFY_SUCCEEDED && d.size() == 0, "already_unified");
+    test_assertion(res == true && d.size() == 0, "already_unified");
   }
 
   void unify_var() {

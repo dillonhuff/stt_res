@@ -11,9 +11,6 @@
 
 using namespace std;
 
-#define UNIFY_SUCCEEDED 0
-#define UNIFY_FAILED 1
-
 namespace stt_res {
 
   typedef int res_code;
@@ -28,6 +25,7 @@ namespace stt_res {
     pair<const var*, tp> term_solvable(const term* l, const term* r);
     
 
+    bool unify_dfs(disagreement_set& s, int depth);
     stt_res::sub reduce_args(const term* l, const term* r);
     const term* append_lambdas(vector<const var*> vars, const term* t);
     const term* apply_args(const term* t, vector<const term*> args);
@@ -86,7 +84,7 @@ namespace stt_res {
 
     const term* sub(const var* target, const term* replacement, const term* t);
 
-    res_code unify(stt_res::disagreement_set& s);
+    bool unify(stt_res::disagreement_set& s);
 
     const term* apply_sub(stt_res::sub& s, const term* t);
 
