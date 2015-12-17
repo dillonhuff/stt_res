@@ -25,7 +25,7 @@ namespace stt_res {
 
   void resolve_a_not_a() {
     context c;
-    auto a = c.mk_var("a", c.b());
+    auto a = c.mk_con("a", c.b());
     auto not_a = c.mk_not(a);
     auto a_p = c.mk_assumption(a);
     auto not_a_p = c.mk_assumption(not_a);
@@ -38,7 +38,7 @@ namespace stt_res {
 
   void resolve_a_na_one_clause() {
     context c;
-    auto a = c.mk_var("a", c.b());
+    auto a = c.mk_con("a", c.b());
     auto not_a = c.mk_not(a);
     auto a_p = c.mk_assumption(a);
     auto not_a_p = c.mk_assumption(not_a);

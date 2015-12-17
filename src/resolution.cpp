@@ -85,7 +85,20 @@ namespace stt_res {
     return p->result == nullptr;
   }
 
+  bool is_sentence(const term* t) {
+    if (t == empty_clause) {
+      return true;
+    }
+    auto fvs = free_vars(t);
+    return fvs.size() == 0;
+  }
+
+  bool all_sentences(vector<proof*> assumptions) {
+    return count_if(assumptions.begin(), assumptions.end(), [](proof* a) { return !is_sentence(a->result); }) == 0;
+  }
+
   proof* resolve(context& c, vector<proof*> assumptions) {
+    assert(all_sentences(assumptions));
     for (auto a : assumptions) {
       if (a->result == empty_clause) {
 	return a;
