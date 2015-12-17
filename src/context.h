@@ -114,6 +114,22 @@ namespace stt_res {
       return mk_ap(mk_ap(o, l), r);
     }
 
+    const term* mk_pi(const term* t) {
+      auto ptr = static_cast<con*>(allocator.allocate(sizeof(con)));
+      //auto a = mk_tvar("a");
+      auto nf = mk_tfunc(mk_tfunc(b(), b()), b());
+      auto pi = new (ptr) con("pi", nf);
+      return mk_ap(pi, t);
+    }
+
+    const term* mk_and(const term* l, const term* r) {
+      return mk_not(mk_or(l, r));
+    }
+    
+    const term* mk_forall(const var* v, const term* e) {
+      return mk_pi(mk_lam(v, e));
+    }
+
     const term* mk_clause(vector<const term*> ts) {
       assert(ts.size() > 0);
       auto t = ts.back();

@@ -48,12 +48,25 @@ namespace stt_res {
     auto p = resolve(c, clauses);
     test_assertion(p->result == empty_clause, "resolve_a_not_a");    
   }
+
+  void refute_not_excluded_middle() {
+    context c;
+    auto a = c.mk_var("a", c.b());
+    auto not_a = c.mk_not(a);
+    auto exc_middle = c.mk_forall(a, c.mk_and(a, not_a));
+    cout << *exc_middle << endl;
+    auto exc_middle_p = c.mk_assumption(exc_middle);
+    vector<proof*> clauses{exc_middle_p};
+    auto p = resolve(c, clauses);
+    test_assertion(p->result == empty_clause, "refute_not_excluded_middle");
+  }
   
   void all_resolution_tests() {
     resolve_empty();
     resolve_empty_clause();
     resolve_a_not_a();
     resolve_a_na_one_clause();
+    refute_not_excluded_middle();
   }
   
 }
