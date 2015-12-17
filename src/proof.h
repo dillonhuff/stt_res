@@ -8,8 +8,10 @@
 
 using namespace std;
 
+#define empty_clause nullptr
+
 namespace stt_res {
-  
+
   class proof {
   public:
     const term* result;

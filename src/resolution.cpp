@@ -31,9 +31,6 @@ namespace stt_res {
 			 const term* r_t,
 			 proof* l,
 			 proof* r) {
-    cout << *l_t << endl;
-    cout << *r_t << endl;
-    cout << theta << endl;
     auto l_terms = l->result->terms();
     auto r_terms = r->result->terms();
     vector<const term*> res_clause_terms;
@@ -64,7 +61,6 @@ namespace stt_res {
 	sub theta;
 	auto sub_succeeded = resolve_sub(c, l_t, r_t, theta);
 	if (sub_succeeded) {
-	  cout << "solved unification" << endl;
 	  return resolved_clause(c, theta, l_t, r_t, l, r);
 	}
       }
@@ -90,13 +86,16 @@ namespace stt_res {
   }
 
   proof* resolve(context& c, vector<proof*> assumptions) {
+    for (auto a : assumptions) {
+      if (a->result == empty_clause) {
+	return a;
+      }
+    }
     while (true) {
       auto new_proofs = new_resolutions(c, assumptions);
       if (new_proofs.size() == 0) {
-	cout << "no new proofs" << endl;
 	return nullptr;
       } else {
-	cout << "new proofs" << endl;
 	for (auto p : new_proofs) {
 	  if (is_refutation(p)) {
 	    return p;
