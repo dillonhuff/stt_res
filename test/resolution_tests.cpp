@@ -5,7 +5,6 @@
 #include "src/context.h"
 #include "src/resolution.h"
 #include "test/catch.hpp"
-#include "test/resolution_tests.h"
 
 using namespace std;
 

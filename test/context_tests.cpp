@@ -3,7 +3,6 @@
 #include "src/ast.h"
 #include "src/context.h"
 #include "test/catch.hpp"
-#include "test/context_tests.h"
 
 using namespace std;
 

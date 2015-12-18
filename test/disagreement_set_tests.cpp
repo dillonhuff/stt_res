@@ -1,8 +1,6 @@
 #include "src/context.h"
 #include "src/disagreement_set.h"
 #include "test/catch.hpp"
-#include "test/disagreement_set_tests.h"
-#include "test/test_utils.h"
 
 namespace stt_res {
 

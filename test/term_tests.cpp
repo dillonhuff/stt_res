@@ -1,7 +1,6 @@
 #include "src/ast.h"
 #include "src/context.h"
 #include "test/catch.hpp"
-#include "test/term_tests.h"
 
 namespace stt_res {
 
