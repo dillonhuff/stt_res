@@ -43,7 +43,7 @@ namespace stt_res {
     const term* inner_imitation_binding_arg(vector<const var*> ys, const type* t);
 
     arena_allocator allocator;
-    const tvar* boolean;
+    const tcon* boolean;
 
   public:
     void reduce_pair_args(stt_res::disagreement_set& s);    
@@ -54,10 +54,10 @@ namespace stt_res {
     
     context() {
       next_unique_num = 0;
-      boolean = mk_tvar("b");
+      boolean = mk_tcon("b");
     }
 
-    const tvar* b() { return boolean; }
+    const tcon* b() { return boolean; }
 
     const term* mk_not(const term* t) {
       auto ptr = static_cast<con*>(allocator.allocate(sizeof(con)));
@@ -81,6 +81,11 @@ namespace stt_res {
       return new (ptr) tvar(name);
     }
 
+    const tcon* mk_tcon(string name) {
+      auto ptr = static_cast<tcon*>(allocator.allocate(sizeof(tcon)));
+      return new (ptr) tcon(name);
+    }    
+    
     const type* mk_tfunc(const type* l, const type* r) {
       auto ptr = static_cast<tfunc*>(allocator.allocate(sizeof(tfunc)));
       return new (ptr) tfunc(l, r);

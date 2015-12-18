@@ -5,7 +5,7 @@
 namespace stt_res {
   TEST_CASE("disagreement_set", "[disagreement_set]") {
     context c;
-    auto t = c.mk_tvar("t");
+    auto t = c.mk_tcon("t");
     auto ft = c.mk_tfunc(t, t);    
     auto x = c.mk_var("x", t);
     auto y = c.mk_var("y", t);    

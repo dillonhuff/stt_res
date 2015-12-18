@@ -10,7 +10,7 @@ namespace stt_res {
 
   TEST_CASE("context", "[context]") {
     context c;
-    auto t = c.mk_tvar("t");
+    auto t = c.mk_tcon("t");
     auto x = c.mk_var("x", t);
     auto y = c.mk_var("y", t);
     auto z = c.mk_var("z", t);    

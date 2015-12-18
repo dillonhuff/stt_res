@@ -9,6 +9,7 @@
 #include "src/ap.h"
 #include "src/con.h"
 #include "src/lam.h"
+#include "src/tcon.h"
 #include "src/tfunc.h"
 #include "src/tvar.h"
 #include "src/var.h"

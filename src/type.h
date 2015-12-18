@@ -9,10 +9,15 @@ namespace stt_res {
   
   class type {
   public:
+    
     virtual bool is_func() const {
       return false;
     }
 
+    virtual bool is_con() const {
+      return false;
+    }
+    
     virtual bool is_var() const {
       return false;
     }

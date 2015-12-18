@@ -6,7 +6,7 @@ namespace stt_res {
 
   TEST_CASE("term tests", "[term]") {
     context c;
-    auto k = c.mk_tvar("k");
+    auto k = c.mk_tcon("k");
     auto a = c.mk_var("a", k);
     auto a1 = c.mk_var("a", k);
     auto a2 = c.mk_var("a", k);
