@@ -44,17 +44,16 @@ namespace stt_res {
       REQUIRE(p->result == empty_clause);
     }
 
-    // SECTION("refute_not_excluded_middle") {
-    //   context c;
-    //   auto a = c.mk_var("a", c.b());
-    //   auto not_a = c.mk_not(a);
-    //   auto exc_middle = c.mk_forall(a, c.mk_and(a, not_a));
-    //   cout << *exc_middle << endl;
-    //   auto exc_middle_p = c.mk_assumption(exc_middle);
-    //   vector<proof*> clauses{exc_middle_p};
-    //   auto p = resolve(c, clauses);
-    //   REQUIRE(p->result == empty_clause);
-    // }
+    SECTION("refute_not_excluded_middle") {
+      auto a = c.mk_var("a", c.b());
+      auto not_a = c.mk_not(a);
+      auto exc_middle = c.mk_forall(a, c.mk_and(a, not_a));
+      cout << *exc_middle << endl;
+      auto exc_middle_p = c.mk_assumption(exc_middle);
+      vector<proof*> clauses{exc_middle_p};
+      auto p = resolve(c, clauses);
+      REQUIRE(p->result == empty_clause);
+    }
 
   }
   

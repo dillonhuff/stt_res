@@ -18,6 +18,13 @@ namespace stt_res {
   public:
     const term* l;
     const term* r;
+
+    // TODO: Add type checking
+    ap(const term* lp, const term* rp, const type* tp) {
+      l = lp;
+      r = rp;
+      t = tp;
+    }
     
     ap(const term* lp, const term* rp) {
       l = lp;

@@ -105,7 +105,12 @@ namespace stt_res {
       auto ptr = static_cast<ap*>(allocator.allocate(sizeof(ap)));
       return new (ptr) ap(l, r);
     }
-    
+
+    const ap* mk_ap(const term* l, const term* r, const type* t) {
+      auto ptr = static_cast<ap*>(allocator.allocate(sizeof(ap)));
+      return new (ptr) ap(l, r, t);
+    }
+
     const lam* mk_lam(const var* v, const term* e) {
       auto t = mk_tfunc(v->t, e->t);
       auto ptr = static_cast<lam*>(allocator.allocate(sizeof(lam)));
@@ -120,11 +125,14 @@ namespace stt_res {
     }
 
     const term* mk_pi(const term* t) {
+      assert(t->t->is_func());
+      auto tf = static_cast<const tfunc*>(t->t);
+      assert(tf->out == b());
       auto ptr = static_cast<con*>(allocator.allocate(sizeof(con)));
-      //auto a = mk_tvar("a");
-      auto nf = mk_tfunc(mk_tfunc(b(), b()), b());
+      auto a = mk_tvar("a");
+      auto nf = mk_tfunc(mk_tfunc(a, b()), b());
       auto pi = new (ptr) con("pi", nf);
-      return mk_ap(pi, t);
+      return mk_ap(pi, t, b());
     }
 
     const term* mk_and(const term* l, const term* r) {
