@@ -97,6 +97,22 @@ namespace stt_res {
     return count_if(assumptions.begin(), assumptions.end(), [](proof* a) { return !is_sentence(a->result); }) == 0;
   }
 
+  void preprocess(context& c,
+		  proof* p,
+		  vector<proof*>& results) {
+    auto r = p->result;
+    
+    results.push_back(p);
+  }
+
+  void preprocess_all(context& c,
+		      vector<proof*>& assumptions,
+		      vector<proof*>& results) {
+    for (auto a : assumptions) {
+      preprocess(c, a, results);
+    }
+  }
+
   proof* resolve(context& c, vector<proof*> assumptions) {
     assert(all_sentences(assumptions));
     for (auto a : assumptions) {
@@ -104,8 +120,10 @@ namespace stt_res {
 	return a;
       }
     }
+    vector<proof*> clauses;
+    preprocess_all(c, assumptions, clauses);
     while (true) {
-      auto new_proofs = new_resolutions(c, assumptions);
+      auto new_proofs = new_resolutions(c, clauses);
       if (new_proofs.size() == 0) {
 	return nullptr;
       } else {
@@ -114,7 +132,7 @@ namespace stt_res {
 	    return p;
 	  }
 	}
-	assumptions.insert(assumptions.end(), new_proofs.begin(), new_proofs.end());
+	clauses.insert(clauses.end(), new_proofs.begin(), new_proofs.end());
       }
     }
     assert(false);

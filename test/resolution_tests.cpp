@@ -50,8 +50,11 @@ namespace stt_res {
       auto exc_middle = c.mk_forall(a, c.mk_and(a, not_a));
       cout << *exc_middle << endl;
       auto exc_middle_p = c.mk_assumption(exc_middle);
+      cout << "Made assumption" << endl;
       vector<proof*> clauses{exc_middle_p};
       auto p = resolve(c, clauses);
+      cout << "Resolved" << endl;
+      cout << (p == nullptr) << endl;
       REQUIRE(p->result == empty_clause);
     }
 
