@@ -1,52 +1,52 @@
 #include "src/ast.h"
 #include "src/context.h"
+#include "test/catch.hpp"
 #include "test/term_tests.h"
-#include "test/test_utils.h"
 
 namespace stt_res {
 
-  void same_var_eq() {
+  TEST_CASE("same_var_eq") {
     context c;
     auto k = c.mk_tvar("k");
     auto a = c.mk_var("a", k);
-    test_assertion(*a == *a, "same_var_eq");
+    REQUIRE(*a == *a);
   }
 
-  void same_var_name_eq() {
+  TEST_CASE("same_var_name_eq") {
     context c;
     auto k = c.mk_tvar("k");
     auto a1 = c.mk_var("a", k);
     auto a2 = c.mk_var("a", k);
-    test_assertion(*a1 == *a2, "same_var_name_eq");
+    REQUIRE(*a1 == *a2);
   }
 
-  void diff_var_neq() {
+  TEST_CASE("diff_var_neq") {
     context c;
     auto k = c.mk_tvar("k");
     auto a = c.mk_var("a", k);
     auto b = c.mk_var("b", k);
-    test_assertion(*a != *b, "diff_var_neq");
+    REQUIRE(*a != *b);
   }
 
-  void same_var_name_not_neq() {
+  TEST_CASE("same_var_name_not_neq") {
     context c;
     auto k = c.mk_tvar("k");
     auto a1 = c.mk_var("a", k);
     auto a2 = c.mk_var("a", k);
-    test_assertion(!(*a1 != *a2), "same_var_name_not_neq");
+    REQUIRE(!(*a1 != *a2));
   }
 
-  void same_ap_eq() {
+  TEST_CASE("same_ap_eq") {
     context c;
     auto k = c.mk_tvar("k");
     auto ft = c.mk_tfunc(k, k);
     auto f = c.mk_var("f", ft);
     auto a = c.mk_var("a", k);
     auto fa = c.mk_ap(f, a);
-    test_assertion(*fa == *fa, "same_ap_eq");
+    REQUIRE(*fa == *fa);
   }
 
-  void diff_ap_neq() {
+  TEST_CASE("diff_ap_neq") {
     context c;
     auto k = c.mk_tvar("k");
     auto ft = c.mk_tfunc(k, k);
@@ -54,10 +54,10 @@ namespace stt_res {
     auto a = c.mk_var("a", k);
     auto b = c.mk_var("b", k);
     auto fa = c.mk_ap(f, a);
-    test_assertion(*fa != *b, "diff_ap_neq");
+    REQUIRE(*fa != *b);
   }
 
-  void diff_lam_neq() {
+  TEST_CASE("diff_lam_neq") {
     context c;
     auto k = c.mk_tvar("k");
     auto x = c.mk_var("x", k);
@@ -67,10 +67,10 @@ namespace stt_res {
     auto fx = c.mk_ap(f, x);
     auto lfx = c.mk_lam(x, fx);
     auto ly = c.mk_lam(x, y);
-    test_assertion(*lfx != *ly, "diff_lam_neq");
+    REQUIRE(*lfx != *ly);
   }
 
-  void same_lam_eq() {
+  TEST_CASE("same_lam_eq") {
     context c;
     auto k = c.mk_tvar("k");
     auto ft = c.mk_tfunc(k, k);
@@ -79,10 +79,10 @@ namespace stt_res {
     auto fx = c.mk_ap(f, x);
     auto lfx1 = c.mk_lam(x, fx);
     auto lfx2 = c.mk_lam(x, fx);
-    test_assertion(*lfx1 == *lfx2, "same_lam_eq");
+    REQUIRE(*lfx1 == *lfx2);
   }
 
-  void lam_free_vars() {
+  TEST_CASE("lam_free_vars") {
     context c;
     auto k = c.mk_tvar("k");
     auto ft = c.mk_tfunc(k, c.mk_tfunc(k, k));
@@ -96,19 +96,8 @@ namespace stt_res {
     auto lfxy = c.mk_lam(f2, fxy);
     auto lxlfxy = c.mk_lam(x2, lfxy);
     auto fvs = free_vars(lxlfxy);
-    test_assertion(fvs.size() == 1 && *(fvs[0]) == *y, "lam_free_vars");
-  }
-
-  void all_term_tests() {
-    same_var_eq();
-    same_var_name_eq();
-    diff_var_neq();
-    same_var_name_not_neq();
-    same_ap_eq();
-    diff_ap_neq();
-    diff_lam_neq();
-    same_lam_eq();
-    lam_free_vars();
+    REQUIRE(fvs.size() == 1);
+    REQUIRE(*(fvs[0]) == *y);
   }
   
 }

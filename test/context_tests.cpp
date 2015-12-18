@@ -2,42 +2,42 @@
 
 #include "src/ast.h"
 #include "src/context.h"
+#include "test/catch.hpp"
 #include "test/context_tests.h"
-#include "test/test_utils.h"
 
 using namespace std;
 
 namespace stt_res {
 
-  void make_var() {
+  TEST_CASE("make_var") {
     context c;
     auto t = c.mk_tvar("t");
     auto a1 = c.mk_var("a", t);
     auto a2 = c.mk_var("a", t);
-    test_assertion(*a1 == *a2, "make_var");
+    REQUIRE(*a1 == *a2);
   }
 
-  void dont_sub_var() {
+  TEST_CASE("dont_sub_var") {
     context c;
     auto t = c.mk_tvar("t");
     auto x = c.mk_var("x", t);
     auto y = c.mk_var("y", t);
     auto z = c.mk_var("z", t);
     auto r = c.sub(x, y, z);
-    test_assertion(*r == *z, "dont_sub_var");
+    REQUIRE(*r == *z);
   }
 
-  void sub_var() {
+  TEST_CASE("sub_var") {
     context c;
     auto t = c.mk_tvar("t");
     auto x1 = c.mk_var("x", t);
     auto y = c.mk_var("y", t);
     auto x2 = c.mk_var("x", t);
     auto r = c.sub(x1, y, x2);
-    test_assertion(*r == *y, "sub_var");
+    REQUIRE(*r == *y);
   }
 
-  void sub_ap() {
+  TEST_CASE("sub_ap") {
     context c;
     auto t = c.mk_tvar("t");
     auto x1 = c.mk_var("x", t);
@@ -48,20 +48,20 @@ namespace stt_res {
     auto fx = c.mk_ap(f, x1);
     auto r = c.sub(x2, y, fx);
     auto correct = c.mk_ap(f, y);
-    test_assertion(*r == *correct, "sub_ap");
+    REQUIRE(*r == *correct);
   }
 
-  void dont_sub_lam() {
+  TEST_CASE("dont_sub_lam") {
     context c;
     auto t = c.mk_tvar("t");
     auto x = c.mk_var("x", t);
     auto y = c.mk_var("y", t);
     auto l = c.mk_lam(x, x);
     auto r = c.sub(x, y, l);
-    test_assertion(*r == *l, "dont_sub_lam");
+    REQUIRE(*r == *l);
   }
 
-  void sub_lam() {
+  TEST_CASE("sub_lam") {
     context c;
     auto t = c.mk_tvar("t");
     auto x = c.mk_var("x", t);
@@ -71,20 +71,21 @@ namespace stt_res {
     auto l = c.mk_lam(x, y1);
     auto r = c.sub(y2, z, l);
     auto correct = c.mk_lam(x, z);
-    test_assertion(*r == *correct, "sub_lam");
+    REQUIRE(*r == *correct);
   }
 
-  void already_unified() {
+  TEST_CASE("already_unified") {
     context c;
     auto t = c.mk_tvar("t");
     auto x = c.mk_var("x", t);
     sub s{tp(x, x)};
     disagreement_set d(s);
     auto res = c.unify(d);
-    test_assertion(res == true && d.size() == 0, "already_unified");
+    REQUIRE(res == true);
+    REQUIRE(d.size() == 0);
   }
 
-  void unify_var() {
+  TEST_CASE("unify_var") {
     context c;
     auto t = c.mk_tvar("t");
     auto x = c.mk_var("x", t);
@@ -95,10 +96,10 @@ namespace stt_res {
     auto final_sub = d.extract_sub();
     auto sx = c.apply_sub(final_sub, x);
     auto sy = c.apply_sub(final_sub, y);
-    test_assertion(*sx == *sy, "unify_var");
+    REQUIRE(*sx == *sy);
   }
 
-  void unify_ap() {
+  TEST_CASE("unify_ap") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, t);
@@ -113,10 +114,10 @@ namespace stt_res {
     auto final_sub = d.extract_sub();
     auto sfx = c.apply_sub(final_sub, fx);
     auto sfy = c.apply_sub(final_sub, fy);
-    test_assertion(*sfx == *sfy, "unify_ap");
+    REQUIRE(*sfx == *sfy);
   }
 
-  void unify_func_var() {
+  TEST_CASE("unify_func_var") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, c.mk_tfunc(t, t));
@@ -132,10 +133,10 @@ namespace stt_res {
     auto final_sub = d.extract_sub();
     auto slf = c.apply_sub(final_sub, lf);
     auto slg = c.apply_sub(final_sub, lg);
-    test_assertion(*slf == *slg, "unify_func_var");
+    REQUIRE(*slf == *slg);
   }
 
-  void unify_2() {
+  TEST_CASE("unify_2") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, t);
@@ -153,10 +154,10 @@ namespace stt_res {
     auto final_sub = d.extract_sub();
     auto sfa = c.apply_sub(final_sub, fa);
     auto sgx = c.apply_sub(final_sub, gx);
-    test_assertion(*sfa == *sgx, "unify_2");
+    REQUIRE(*sfa == *sgx);
   }
 
-  void unify_funcs() {
+  TEST_CASE("unify_funcs") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, t);
@@ -171,10 +172,10 @@ namespace stt_res {
     auto final_sub = d.extract_sub();
     auto sfx = c.apply_sub(final_sub, fx);
     auto sgx = c.apply_sub(final_sub, gx);
-    test_assertion(*sfx == *sgx, "unify_funcs");
+    REQUIRE(*sfx == *sgx);
   }
 
-  void unify_lam_funcs() {
+  TEST_CASE("unify_lam_funcs") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, t);
@@ -191,10 +192,10 @@ namespace stt_res {
     auto final_sub = d.extract_sub();
     auto slfx = c.apply_sub(final_sub, lfx);
     auto slgx = c.apply_sub(final_sub, lgx);
-    test_assertion(*slfx == *slgx, "unify_lam_funcs");
+    REQUIRE(*slfx == *slgx);
   }
 
-  void unify_funcs_multi_var() {
+  TEST_CASE("unify_funcs_multi_var") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, c.mk_tfunc(t, t));
@@ -214,10 +215,10 @@ namespace stt_res {
     auto sgx = c.apply_sub(final_sub, gxy);
     cout << "-- sfx " << *sfx << endl;
     cout << "-- sgx " << *sgx << endl;
-    test_assertion(*sfx == *sgx, "unify_funcs_multi_var");
+    REQUIRE(*sfx == *sgx);
   }
 
-  void unify_func_const() {
+  TEST_CASE("unify_func_const") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, t);
@@ -234,10 +235,10 @@ namespace stt_res {
     auto final_sub = d.extract_sub();
     auto sFfx = c.apply_sub(final_sub, Ffx);
     auto sfFx = c.apply_sub(final_sub, fFx);
-    test_assertion(*sFfx == *sfFx, "unify_func_const");
+    REQUIRE(*sFfx == *sfFx);
   }
 
-  void unify_fx_Fx() {
+  TEST_CASE("unify_fx_Fx") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, t);
@@ -252,10 +253,10 @@ namespace stt_res {
     auto final_sub = d.extract_sub();
     auto sFx = c.apply_sub(final_sub, Fx);
     auto sfx = c.apply_sub(final_sub, fx);
-    test_assertion(*sFx == *sfx, "unify_fx_Fx");
+    REQUIRE(*sFx == *sfx);
   }
 
-  void unify_Fx_Fx() {
+  TEST_CASE("unify_Fx_Fx") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, t);
@@ -267,10 +268,10 @@ namespace stt_res {
     c.unify(d);
     auto final_sub = d.extract_sub();
     auto sFx = c.apply_sub(final_sub, Fx);
-    test_assertion(*sFx == *sFx, "unify_Fx_Fx");
+    REQUIRE(*sFx == *sFx);
   }
 
-  void unify_Fx_Fy() {
+  TEST_CASE("unify_Fx_Fy") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, t);
@@ -285,10 +286,10 @@ namespace stt_res {
     auto final_sub = d.extract_sub();
     auto sFx = c.apply_sub(final_sub, Fx);
     auto sFy = c.apply_sub(final_sub, Fy);
-    test_assertion(*sFx == *sFy, "unify_Fx_Fy");
+    REQUIRE(*sFx == *sFy);
   }
 
-  void unify_lFx_lfx() {
+  TEST_CASE("unify_lFx_lfx") {
     context c;
     auto t = c.mk_tvar("t");
     auto ft = c.mk_tfunc(t, t);
@@ -303,29 +304,7 @@ namespace stt_res {
     auto final_sub = d.extract_sub();
     auto slFx = c.apply_sub(final_sub, lFx);
     auto slfx = c.apply_sub(final_sub, lfx);
-    test_assertion(*slFx == *slfx, "unify_lFx_lfx");
+    REQUIRE(*slFx == *slfx);
   }  
-  
-  void all_context_tests() {
-    make_var();
-    dont_sub_var();
-    sub_var();
-    sub_ap();
-    dont_sub_lam();
-    sub_lam();
-    unify_var();
-    already_unified();
-    unify_ap();
-    unify_func_var();
-    unify_2();
-    unify_funcs();
-    unify_lam_funcs();
-    unify_funcs_multi_var();
-    unify_Fx_Fx();
-    unify_Fx_Fy();
-    unify_lFx_lfx();
-    unify_fx_Fx();
-    unify_func_const();
-  }
 
 }
